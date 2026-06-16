@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: dark_lab_solutions_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: darklabs
+      POSTGRES_PASSWORD: darklabs_dev_password
+      POSTGRES_DB: dark_labs_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - dark_lab_solutions_postgres:/var/lib/postgresql/data
+
+volumes:
+  dark_lab_solutions_postgres:
