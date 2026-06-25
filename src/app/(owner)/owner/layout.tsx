@@ -1,6 +1,10 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 
+import { SignOutButton } from "@/components/auth/SignOutButton";
 import { APP_CONFIG } from "@/config/app";
+import { requireOwner } from "@/lib/auth/require";
 
 const ownerLinks = [
   { label: "Dashboard", href: "/owner" },
@@ -11,11 +15,13 @@ const ownerLinks = [
   { label: "Notes", href: "/owner/notes" },
 ];
 
-export default function OwnerLayout({
+export default async function OwnerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const owner = await requireOwner();
+
   return (
     <div className="min-h-screen bg-[#050507] text-white">
       <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-white/10 bg-black/50 p-5 backdrop-blur-xl lg:block">
@@ -40,14 +46,15 @@ export default function OwnerLayout({
           ))}
         </nav>
 
-        <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-amber-300/20 bg-amber-300/[0.06] p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/70">
-            Auth next
+        <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+          <p className="text-xs text-white/40">Signed in as</p>
+          <p className="mt-1 truncate text-sm font-medium text-white/80">
+            {owner.email}
           </p>
-          <p className="mt-2 text-xs leading-5 text-white/45">
-            This shell is public until Google auth and owner email protection
-            are wired in the next batch.
+          <p className="mt-3 text-xs text-white/35">
+            Workspace: {owner.workspaceSlug}
           </p>
+          <SignOutButton />
         </div>
       </aside>
 

@@ -1,46 +1,90 @@
+export const dynamic = "force-dynamic";
+
+import { prisma } from "@/lib/db/prisma";
+import { requireOwner } from "@/lib/auth/require";
+
 export const metadata = {
   title: "Command Center",
 };
 
-const cards = [
-  {
-    label: "Clients",
-    value: "0",
-    detail: "Client CRM module comes after auth.",
-  },
-  {
-    label: "Projects",
-    value: "0",
-    detail: "Project tracking will connect to Prisma.",
-  },
-  {
-    label: "Tasks",
-    value: "0",
-    detail: "Workbench execution layer is planned.",
-  },
-  {
-    label: "Goals",
-    value: "0",
-    detail: "Personal and business goals will live here.",
-  },
-];
+export default async function OwnerDashboardPage() {
+  const owner = await requireOwner();
 
-export default function OwnerDashboardPage() {
+  const [clients, projects, tasks, goals, notes] = await Promise.all([
+    prisma.client.count({
+      where: {
+        workspaceId: owner.workspaceId,
+      },
+    }),
+    prisma.project.count({
+      where: {
+        workspaceId: owner.workspaceId,
+      },
+    }),
+    prisma.task.count({
+      where: {
+        workspaceId: owner.workspaceId,
+      },
+    }),
+    prisma.goal.count({
+      where: {
+        workspaceId: owner.workspaceId,
+      },
+    }),
+    prisma.note.count({
+      where: {
+        workspaceId: owner.workspaceId,
+      },
+    }),
+  ]);
+
+  const cards = [
+    {
+      label: "Clients",
+      value: clients,
+      detail: "Client CRM module comes next.",
+    },
+    {
+      label: "Projects",
+      value: projects,
+      detail: "Project tracking will connect here.",
+    },
+    {
+      label: "Tasks",
+      value: tasks,
+      detail: "Workbench execution layer is planned.",
+    },
+    {
+      label: "Goals",
+      value: goals,
+      detail: "Personal and business goals will live here.",
+    },
+    {
+      label: "Notes",
+      value: notes,
+      detail: "Knowledge layer and memory system.",
+    },
+  ];
+
   return (
     <section className="px-5 py-8 lg:px-10">
       <div className="max-w-6xl">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/35">
-          Owner Shell
+          Owner Only
         </p>
+
         <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] md:text-5xl">
           Dark Labs Command Center
         </h1>
+
         <p className="mt-4 max-w-2xl text-sm leading-6 text-white/55">
-          This will become the private operating layer for clients, projects,
-          tasks, goals, notes, and future automation.
+          This is now protected by Google authentication, owner email
+          authorization, and workspace membership. It will become the private
+          operating layer for clients, projects, tasks, goals, notes, and future
+          automation.
         </p>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {cards.map((card) => (
             <div
               key={card.label}
@@ -58,8 +102,9 @@ export default function OwnerDashboardPage() {
         <div className="mt-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-6">
           <h2 className="text-lg font-semibold">Next engineering milestone</h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-white/55">
-            Wire Google authentication, owner email authorization, workspace
-            bootstrap, and server-side route protection.
+            Build the first real owner modules: clients, projects, tasks, and
+            goals. The dashboard is already reading live workspace-scoped counts
+            from Postgres.
           </p>
         </div>
       </div>

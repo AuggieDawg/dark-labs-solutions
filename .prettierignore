@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+build
+coverage
+src/generated
+src/generated/**
+prisma/migrations
+prisma/migrations/**

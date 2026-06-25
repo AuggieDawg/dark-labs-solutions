@@ -1,12 +1,38 @@
 import Link from "next/link";
 
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 import { APP_CONFIG } from "@/config/app";
+
+type SignInPageProps = {
+  searchParams?: Promise<{
+    callbackUrl?: string;
+  }>;
+};
 
 export const metadata = {
   title: "Sign In",
 };
 
-export default function SignInPage() {
+function getSafeCallbackUrl(callbackUrl: string | undefined) {
+  if (!callbackUrl) {
+    return "/owner";
+  }
+
+  if (!callbackUrl.startsWith("/")) {
+    return "/owner";
+  }
+
+  if (callbackUrl.startsWith("//")) {
+    return "/owner";
+  }
+
+  return callbackUrl;
+}
+
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+  const params = searchParams ? await searchParams : {};
+  const callbackUrl = getSafeCallbackUrl(params.callbackUrl);
+
   return (
     <main className="min-h-screen bg-black px-6 text-white">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center">
@@ -18,28 +44,22 @@ export default function SignInPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/35">
             Secure Access
           </p>
+
           <h1 className="mt-5 text-3xl font-semibold tracking-[-0.04em]">
             Enter the Command Center.
           </h1>
+
           <p className="mt-4 text-sm leading-6 text-white/50">
-            Google authentication and owner email authorization will be wired in
-            the next batch. This page is the visual shell.
+            Owner-only access is granted through Google authentication and the
+            approved Dark Labs owner email allowlist.
           </p>
 
-          <button
-            type="button"
-            disabled
-            className="mt-8 h-12 w-full cursor-not-allowed rounded-full bg-white/25 px-6 text-sm font-semibold text-white/50"
-          >
-            Continue with Google soon
-          </button>
+          <GoogleSignInButton callbackUrl={callbackUrl} />
 
-          <Link
-            href="/owner"
-            className="mt-4 inline-flex text-sm font-semibold text-white/60 hover:text-white"
-          >
-            Preview owner shell
-          </Link>
+          <p className="mt-5 text-xs leading-5 text-white/35">
+            If your email is not listed in OWNER_EMAILS, authentication can
+            succeed but owner access will still be denied.
+          </p>
         </div>
       </div>
     </main>
