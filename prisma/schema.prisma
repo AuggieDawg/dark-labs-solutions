@@ -276,11 +276,12 @@ model Project {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
 
-  milestones   ProjectMilestone[]
-  deliverables ProjectDeliverable[]
-  updates      ProjectUpdate[]
-  tasks        Task[]
-  notes        Note[]
+  milestones        ProjectMilestone[]
+  deliverables      ProjectDeliverable[]
+  beforeAfterAssets ProjectBeforeAfterAsset[]
+  updates           ProjectUpdate[]
+  tasks             Task[]
+  notes             Note[]
 
   @@unique([workspaceId, slug])
   @@index([workspaceId, status])
@@ -512,6 +513,23 @@ model Note {
   @@index([goalId])
   @@index([authorId])
   @@index([workspaceId, visibility])
+}
+
+model ProjectBeforeAfterAsset {
+  id        String @id @default(cuid())
+  projectId String
+
+  label          String?
+  beforeImageUrl String?
+  afterImageUrl  String?
+  notes          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
 }
 
 model ActivityLog {

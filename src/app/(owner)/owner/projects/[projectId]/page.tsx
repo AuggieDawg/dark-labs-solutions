@@ -322,7 +322,15 @@ export default async function ProjectDetailPage({
                     key={milestone.id}
                     className="rounded-2xl border border-white/10 bg-black/35 p-4"
                   >
-                    <p className="font-semibold">{milestone.title}</p>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="font-semibold">{milestone.title}</p>
+                      <Link
+                        href={`/owner/projects/${project.id}/milestones/${milestone.id}`}
+                        className="text-xs font-semibold uppercase tracking-[0.18em] text-white/45 hover:text-white"
+                      >
+                        Edit
+                      </Link>
+                    </div>
                     <p className="mt-2 text-sm text-white/45">
                       {formatEnumLabel(milestone.status)} · Due{" "}
                       {formatDate(milestone.dueDate)}

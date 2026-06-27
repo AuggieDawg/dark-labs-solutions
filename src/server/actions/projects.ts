@@ -52,7 +52,7 @@ function optionalDate(formData: FormData, key: string) {
     return null;
   }
 
-  return new Date(`${value}T00:00:00.000Z`);
+  return new Date(`${value}T12:00:00.000Z`);
 }
 
 function optionalBudgetCents(formData: FormData, key: string) {
@@ -423,4 +423,69 @@ export async function createProjectUpdateAction(
   revalidatePath("/owner");
   revalidatePath("/owner/projects");
   revalidatePath(`/owner/projects/${project.id}`);
+}
+
+export async function updateProjectMilestoneAction(
+  milestoneId: string,
+  formData: FormData,
+) {
+  const owner = await requireOwner();
+
+  const milestone = await prisma.projectMilestone.findFirst({
+    where: {
+      id: milestoneId,
+      project: {
+        workspaceId: owner.workspaceId,
+      },
+    },
+    include: {
+      project: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!milestone) {
+    throw new Error("Milestone not found");
+  }
+
+  const title = requiredText(formData, "title", "Milestone title");
+
+  const updated = await prisma.projectMilestone.update({
+    where: {
+      id: milestone.id,
+    },
+    data: {
+      title,
+      description: optionalText(formData, "description"),
+      status: parseMilestoneStatus(formData.get("status")),
+      dueDate: optionalDate(formData, "dueDate"),
+      visibility: parseVisibility(formData.get("visibility")),
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      workspaceId: owner.workspaceId,
+      actorId: owner.userId,
+      entityType: "ProjectMilestone",
+      entityId: updated.id,
+      action: "project_milestone.updated",
+      summary: `Updated milestone ${updated.title} on ${milestone.project.name}`,
+      metadata: {
+        projectId: milestone.project.id,
+        status: updated.status,
+      },
+    },
+  });
+
+  revalidatePath("/owner");
+  revalidatePath("/owner/projects");
+  revalidatePath(`/owner/projects/${milestone.project.id}`);
+  revalidatePath(
+    `/owner/projects/${milestone.project.id}/milestones/${milestone.id}`,
+  );
 }

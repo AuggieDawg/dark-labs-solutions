@@ -1,3 +1,5 @@
+import { DARK_LABS_TIME_ZONE } from "@/lib/time/config";
+
 export function formatDate(value: Date | string | null | undefined) {
   if (!value) {
     return "—";
@@ -7,6 +9,23 @@ export function formatDate(value: Date | string | null | undefined) {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: DARK_LABS_TIME_ZONE,
+  }).format(new Date(value));
+}
+
+export function formatTimestamp(value: Date | string | null | undefined) {
+  if (!value) {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: DARK_LABS_TIME_ZONE,
+    timeZoneName: "short",
   }).format(new Date(value));
 }
 
