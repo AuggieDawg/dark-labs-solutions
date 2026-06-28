@@ -1,3 +1,4 @@
+import { FloatingConversionDock } from "@/components/site/FloatingConversionDock";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
 
@@ -11,6 +12,7 @@ export default function PublicSiteLayout({
       <SiteNav />
       {children}
       <SiteFooter />
+      <FloatingConversionDock />
     </div>
   );
 }

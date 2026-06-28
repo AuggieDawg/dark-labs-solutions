@@ -11,28 +11,28 @@ export function SiteNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/60 backdrop-blur-2xl">
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <Link
           href="/"
           aria-label="Dark Labs home"
-          className="group inline-flex items-center gap-4"
+          className="pointer-events-auto group inline-flex items-center gap-3"
         >
           <Image
             src="/brand/dark-labs-mark.png"
             alt=""
-            width={72}
-            height={72}
+            width={88}
+            height={88}
             priority
-            className="h-14 w-14 object-contain drop-shadow-[0_0_18px_rgba(255,255,255,0.16)] transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_24px_rgba(255,255,255,0.22)] md:h-16 md:w-16"
+            className="h-14 w-14 object-contain drop-shadow-[0_0_22px_rgba(255,255,255,0.20)] transition duration-300 group-hover:scale-105 md:h-[72px] md:w-[72px]"
           />
 
-          <span className="hidden text-sm font-semibold uppercase tracking-[0.32em] text-white sm:inline">
+          <span className="hidden text-sm font-semibold uppercase tracking-[0.32em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.75)] sm:inline">
             {APP_CONFIG.companyName}
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="pointer-events-auto hidden items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 shadow-2xl shadow-black/35 backdrop-blur-xl md:flex">
           {APP_CONFIG.publicNav.slice(1).map((item) => {
             const active = pathname === item.href;
 
@@ -41,33 +41,46 @@ export function SiteNav() {
                 key={item.href}
                 href={item.href}
                 className={[
-                  "relative text-xs font-medium uppercase tracking-[0.22em] transition",
-                  active ? "text-white" : "text-white/45 hover:text-white",
+                  "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition",
+                  active
+                    ? "bg-white text-black"
+                    : "text-white/58 hover:bg-white/[0.08] hover:text-white",
                 ].join(" ")}
               >
                 {item.label}
-                {active ? (
-                  <span className="absolute -bottom-2 left-0 h-px w-full bg-white/70" />
-                ) : null}
               </Link>
             );
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="pointer-events-auto flex items-center gap-2">
           <TimeZoneBadge />
+
+          <a
+            href={APP_CONFIG.phoneHref}
+            className="hidden rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/75 shadow-2xl shadow-black/30 backdrop-blur-xl transition hover:bg-white hover:text-black lg:inline-flex"
+          >
+            Call
+          </a>
+
+          <Link
+            href="/contact"
+            className="rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-2xl shadow-black/30 transition hover:bg-white/90 sm:px-5"
+          >
+            Contact
+          </Link>
 
           <Link
             href="/owner"
-            className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:bg-white hover:text-black sm:px-5 sm:py-2.5"
+            className="hidden rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/60 shadow-2xl shadow-black/30 backdrop-blur-xl transition hover:bg-white/[0.08] hover:text-white sm:inline-flex"
           >
             Command
           </Link>
         </div>
       </div>
 
-      <div className="border-t border-white/10 px-6 py-3 md:hidden">
-        <nav className="mx-auto flex max-w-7xl gap-5 overflow-x-auto text-xs font-medium uppercase tracking-[0.2em] text-white/45">
+      <div className="pointer-events-auto mx-auto flex max-w-7xl px-4 md:hidden">
+        <nav className="flex gap-2 overflow-x-auto rounded-full border border-white/10 bg-black/25 px-2 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50 shadow-2xl shadow-black/40 backdrop-blur-xl">
           {APP_CONFIG.publicNav.slice(1).map((item) => {
             const active = pathname === item.href;
 
@@ -75,7 +88,10 @@ export function SiteNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={active ? "shrink-0 text-white" : "shrink-0"}
+                className={[
+                  "shrink-0 rounded-full px-3 py-2",
+                  active ? "bg-white text-black" : "hover:text-white",
+                ].join(" ")}
               >
                 {item.label}
               </Link>

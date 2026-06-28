@@ -1,28 +1,43 @@
 import Link from "next/link";
 
-const layers = [
+import { APP_CONFIG } from "@/config/app";
+
+const painPoints = [
   {
-    number: "01",
-    title: "Public Presence",
-    body: "Premium websites, landing pages, positioning, conversion structure, and trust-building design.",
+    title: "Your website does not convert.",
+    body: "The business looks less capable online than it actually is, and good leads hesitate.",
   },
   {
-    number: "02",
-    title: "Operational Systems",
-    body: "Automations, dashboards, lead routing, client workflows, and internal tools built around the actual business.",
+    title: "Your workflow leaks time.",
+    body: "Forms, calls, notes, follow-ups, and project details are scattered across too many places.",
   },
   {
-    number: "03",
-    title: "Private Platform",
-    body: "Owner command center, client portals, task workbench, knowledge layer, and long-term software infrastructure.",
+    title: "You cannot see the business clearly.",
+    body: "Owners need dashboards and systems that show what is active, late, profitable, or blocked.",
   },
 ];
 
-const principles = [
-  "Business value before technical novelty",
-  "Clear access control before private data",
-  "Reusable systems over one-off hacks",
-  "Design that earns trust before it asks for attention",
+const buildPath = [
+  {
+    number: "01",
+    title: "Clarify the offer",
+    body: "We define what the customer needs to understand before they trust you enough to call.",
+  },
+  {
+    number: "02",
+    title: "Build the public layer",
+    body: "We create a premium web presence designed around trust, clarity, speed, and conversion.",
+  },
+  {
+    number: "03",
+    title: "Connect the operations",
+    body: "We add the forms, automations, dashboards, and internal systems that make the website useful.",
+  },
+  {
+    number: "04",
+    title: "Compound the platform",
+    body: "The system improves over time with better workflows, better data, and stronger client experience.",
+  },
 ];
 
 export function HomeSections() {
@@ -32,30 +47,47 @@ export function HomeSections() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-              Operating Layers
+              Why Dark Labs
             </p>
             <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-              The website is the front door. The system is the business.
+              The goal is simple: turn visitors into customers.
             </h2>
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/52">
+              A business website should not exist just to look modern. It should
+              create trust, explain the offer, generate contact, and support the
+              operations behind the work.
+            </p>
           </div>
 
           <div className="mt-12 grid gap-4 lg:grid-cols-3">
-            {layers.map((layer) => (
+            {painPoints.map((item) => (
               <article
-                key={layer.number}
-                className="group min-h-80 rounded-[2rem] border border-white/10 bg-white/[0.035] p-7 transition hover:bg-white/[0.06]"
+                key={item.title}
+                className="min-h-72 rounded-[2rem] border border-white/10 bg-white/[0.035] p-7"
               >
-                <p className="font-mono text-5xl tracking-[-0.08em] text-white/25 transition group-hover:text-white/60">
-                  {layer.number}
-                </p>
-                <h3 className="mt-14 text-2xl font-semibold tracking-[-0.04em]">
-                  {layer.title}
+                <h3 className="text-2xl font-semibold tracking-[-0.04em]">
+                  {item.title}
                 </h3>
-                <p className="mt-4 text-sm leading-6 text-white/50">
-                  {layer.body}
+                <p className="mt-5 text-sm leading-6 text-white/50">
+                  {item.body}
                 </p>
               </article>
             ))}
+          </div>
+
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={APP_CONFIG.phoneHref}
+              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+            >
+              Call Now
+            </a>
+            <Link
+              href="/services"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+            >
+              See What We Build
+            </Link>
           </div>
         </div>
       </section>
@@ -73,34 +105,33 @@ export function HomeSections() {
         <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.82fr_1.18fr]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-              Method
+              Funnel Flow
             </p>
             <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-              Engineer around the business reality.
+              From attention to contact to operating system.
             </h2>
             <p className="mt-6 max-w-xl text-sm leading-7 text-white/50">
-              Every build should create leverage: more trust, more visibility,
-              fewer manual steps, stronger client experience, and cleaner
-              execution.
+              The public site earns attention. The service pages explain the
+              value. The contact path turns interest into a real conversation.
+              The private platform manages the work after the sale.
             </p>
           </div>
 
           <div className="grid gap-3">
-            {principles.map((item, index) => (
+            {buildPath.map((item) => (
               <div
-                key={item}
+                key={item.number}
                 className="grid gap-5 rounded-3xl border border-white/10 bg-white/[0.035] p-5 md:grid-cols-[88px_1fr]"
               >
                 <p className="font-mono text-3xl tracking-[-0.08em] text-white/35">
-                  {String(index + 1).padStart(2, "0")}
+                  {item.number}
                 </p>
                 <div>
                   <h3 className="text-xl font-semibold tracking-[-0.03em]">
-                    {item}
+                    {item.title}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-white/45">
-                    Dark Labs is being built as both a business and the
-                    operating platform behind the business.
+                    {item.body}
                   </p>
                 </div>
               </div>
@@ -113,25 +144,25 @@ export function HomeSections() {
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-[2rem] border border-white/10 bg-white/[0.035] p-8 md:flex-row md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
-              Build the system
+              Start
             </p>
             <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-              Your business deserves infrastructure, not decoration.
+              Want more customers from a better digital system?
             </h2>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/contact"
+            <a
+              href={APP_CONFIG.phoneHref}
               className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
             >
-              Start a Project
-            </Link>
+              Call Now
+            </a>
             <Link
-              href="/services"
+              href="/contact"
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
             >
-              Explore Services
+              Contact Dark Labs
             </Link>
           </div>
         </div>

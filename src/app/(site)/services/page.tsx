@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { VideoBackdrop } from "@/components/site/VideoBackdrop";
+import { APP_CONFIG } from "@/config/app";
 
 export const metadata = {
   title: "Services",
@@ -99,18 +100,18 @@ const serviceDetails = [
 export default function ServicesPage() {
   return (
     <main className="bg-black text-white">
-      <section className="grid min-h-[calc(100vh-80px)] border-b border-white/10 lg:grid-cols-4">
+      <section className="grid min-h-[100svh] border-b border-white/10 lg:grid-cols-4">
         {servicePanels.map((service) => (
           <a
             key={service.id}
             href={`#${service.id}-details`}
-            className="group relative min-h-[calc(100vh-80px)] overflow-hidden border-b border-white/10 lg:border-b-0 lg:border-r lg:last:border-r-0"
+            className="group relative min-h-[100svh] overflow-hidden border-b border-white/10 lg:border-b-0 lg:border-r lg:last:border-r-0"
           >
             <VideoBackdrop
               src={service.video}
-              className="h-full min-h-[calc(100vh-80px)]"
+              className="h-full min-h-[100svh]"
             >
-              <div className="flex min-h-[calc(100vh-80px)] flex-col justify-between px-6 py-8">
+              <div className="flex min-h-[100svh] flex-col justify-between px-6 pb-10 pt-32 md:pt-36">
                 <div className="flex items-start justify-between gap-5">
                   <p className="font-mono text-sm text-white/45">
                     {service.number}
@@ -124,12 +125,12 @@ export default function ServicesPage() {
                   <h2 className="text-4xl font-semibold tracking-[-0.06em] md:text-5xl lg:text-4xl xl:text-5xl">
                     {service.title}
                   </h2>
-                  <p className="mt-4 max-w-sm text-sm leading-6 text-white/60">
+                  <p className="mt-4 max-w-sm text-sm leading-6 text-white/65">
                     {service.description}
                   </p>
 
                   <div className="mt-8 flex items-center gap-4">
-                    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
+                    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/58">
                       Explore
                     </span>
                     <span className="h-px w-10 bg-white/35 transition-all duration-500 group-hover:w-20" />
@@ -154,6 +155,21 @@ export default function ServicesPage() {
             dashboards create visibility. The platform becomes the operating
             system behind the work.
           </p>
+
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={APP_CONFIG.phoneHref}
+              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+            >
+              Call Now
+            </a>
+            <Link
+              href="/contact"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+            >
+              Start a Project
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -194,6 +210,21 @@ export default function ServicesPage() {
                     </div>
                   ))}
                 </div>
+
+                <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href={APP_CONFIG.phoneHref}
+                    className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:bg-white/90"
+                  >
+                    Call About {service.title}
+                  </a>
+                  <Link
+                    href="/contact"
+                    className="inline-flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+                  >
+                    Start a Project
+                  </Link>
+                </div>
               </div>
             </div>
           </article>
@@ -211,12 +242,20 @@ export default function ServicesPage() {
             </h2>
           </div>
 
-          <Link
-            href="/contact"
-            className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
-          >
-            Start a Project
-          </Link>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a
+              href={APP_CONFIG.phoneHref}
+              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+            >
+              Call Now
+            </a>
+            <Link
+              href="/contact"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+            >
+              Contact Dark Labs
+            </Link>
+          </div>
         </div>
       </section>
     </main>
