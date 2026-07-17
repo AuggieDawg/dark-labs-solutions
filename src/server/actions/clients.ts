@@ -7,6 +7,7 @@ import { ClientStatus } from "@/generated/prisma";
 
 import { requireOwner } from "@/lib/auth/require";
 import { prisma } from "@/lib/db/prisma";
+import { savePublicImageUpload } from "@/lib/uploads/images";
 import { slugify } from "@/lib/utils/slug";
 
 const CLIENT_STATUS_VALUES = new Set<string>(Object.values(ClientStatus));
@@ -228,4 +229,57 @@ export async function createClientContactAction(
   revalidatePath("/owner");
   revalidatePath("/owner/clients");
   revalidatePath(`/owner/clients/${client.id}`);
+}
+
+export async function uploadClientLogoAction(
+  clientId: string,
+  formData: FormData,
+) {
+  const { owner, client } = await requireOwnedClient(clientId);
+
+  const logoValue = formData.get("logo");
+
+  const logo =
+    logoValue instanceof File && logoValue.size > 0 ? logoValue : null;
+
+  if (!logo) {
+    throw new Error("Upload a logo image");
+  }
+
+  const logoUrl = await savePublicImageUpload({
+    file: logo,
+    segments: ["clients", client.id, "logo"],
+  });
+
+  if (!logoUrl) {
+    throw new Error("Logo upload failed");
+  }
+
+  const updated = await prisma.client.update({
+    where: {
+      id: client.id,
+    },
+    data: {
+      logoUrl,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      workspaceId: owner.workspaceId,
+      actorId: owner.userId,
+      entityType: "Client",
+      entityId: updated.id,
+      action: "client.logo_uploaded",
+      summary: `Uploaded logo for ${updated.name}`,
+      metadata: {
+        logoUrl,
+      },
+    },
+  });
+
+  revalidatePath("/owner");
+  revalidatePath("/owner/clients");
+  revalidatePath(`/owner/clients/${client.id}`);
+  revalidatePath("/owner/projects");
 }

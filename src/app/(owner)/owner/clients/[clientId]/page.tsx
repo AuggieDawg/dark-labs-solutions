@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -8,6 +9,7 @@ import { formatDate, formatEnumLabel } from "@/lib/utils/format";
 import {
   createClientContactAction,
   updateClientAction,
+  uploadClientLogoAction,
 } from "@/server/actions/clients";
 import { getClientDetailForWorkspace } from "@/server/queries/clients";
 
@@ -39,6 +41,7 @@ export default async function ClientDetailPage({
 
   const updateClient = updateClientAction.bind(null, client.id);
   const createContact = createClientContactAction.bind(null, client.id);
+  const uploadLogo = uploadClientLogoAction.bind(null, client.id);
 
   return (
     <section className="px-5 py-8 lg:px-10">
@@ -62,16 +65,34 @@ export default async function ClientDetailPage({
           </p>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-5">
-          <p className="text-xs uppercase tracking-[0.22em] text-white/35">
-            Status
-          </p>
-          <p className="mt-2 text-lg font-semibold">
-            {formatEnumLabel(client.status)}
-          </p>
-          <p className="mt-2 text-xs text-white/35">
-            Updated {formatDate(client.updatedAt)}
-          </p>
+        <div className="flex min-w-[280px] items-center gap-4 rounded-3xl border border-white/10 bg-white/[0.035] p-5">
+          <div className="grid h-20 w-20 place-items-center rounded-2xl border border-white/10 bg-black/35">
+            {client.logoUrl ? (
+              <Image
+                src={client.logoUrl}
+                alt={`${client.name} logo`}
+                width={96}
+                height={96}
+                className="h-16 w-16 object-contain"
+              />
+            ) : (
+              <span className="text-xl font-semibold text-white/35">
+                {client.name.slice(0, 2).toUpperCase()}
+              </span>
+            )}
+          </div>
+
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-white/35">
+              Status
+            </p>
+            <p className="mt-2 text-lg font-semibold">
+              {formatEnumLabel(client.status)}
+            </p>
+            <p className="mt-2 text-xs text-white/35">
+              Updated {formatDate(client.updatedAt)}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -207,6 +228,49 @@ export default async function ClientDetailPage({
         </form>
 
         <div className="grid gap-6">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-6">
+            <h2 className="text-xl font-semibold">Client logo</h2>
+
+            <div className="mt-5 flex items-center gap-4">
+              <div className="grid h-24 w-24 place-items-center rounded-3xl border border-white/10 bg-black/35">
+                {client.logoUrl ? (
+                  <Image
+                    src={client.logoUrl}
+                    alt={`${client.name} logo`}
+                    width={128}
+                    height={128}
+                    className="h-20 w-20 object-contain"
+                  />
+                ) : (
+                  <span className="text-2xl font-semibold text-white/35">
+                    {client.name.slice(0, 2).toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              <p className="max-w-sm text-sm leading-6 text-white/45">
+                Upload a logo so client and project pages are easier to scan.
+              </p>
+            </div>
+
+            <form action={uploadLogo} className="mt-5 grid gap-4">
+              <input
+                name="logo"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                required
+                className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white file:mr-4 file:rounded-full file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+              />
+
+              <button
+                type="submit"
+                className="h-11 rounded-full border border-white/10 bg-white/[0.06] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
+              >
+                Upload Logo
+              </button>
+            </form>
+          </div>
+
           <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-6">
             <h2 className="text-xl font-semibold">Contacts</h2>
 

@@ -62,6 +62,7 @@ export async function listProjectsForWorkspace({
           id: true,
           name: true,
           company: true,
+          logoUrl: true,
         },
       },
       _count: {
@@ -71,6 +72,7 @@ export async function listProjectsForWorkspace({
           updates: true,
           tasks: true,
           notes: true,
+          beforeAfterAssets: true,
         },
       },
     },
@@ -92,12 +94,16 @@ export async function getProjectDetailForWorkspace(
           id: true,
           name: true,
           company: true,
+          logoUrl: true,
         },
       },
       milestones: {
         orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
       },
       deliverables: {
+        orderBy: [{ createdAt: "desc" }],
+      },
+      beforeAfterAssets: {
         orderBy: [{ createdAt: "desc" }],
       },
       updates: {
@@ -119,6 +125,7 @@ export async function getProjectDetailForWorkspace(
           updates: true,
           tasks: true,
           notes: true,
+          beforeAfterAssets: true,
         },
       },
     },

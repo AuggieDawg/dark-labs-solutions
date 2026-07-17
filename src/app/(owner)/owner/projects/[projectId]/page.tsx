@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -6,6 +7,7 @@ import {
   MilestoneStatus,
   ProjectPriority,
   ProjectStatus,
+  ServiceCategory,
   Visibility,
 } from "@/generated/prisma";
 
@@ -42,6 +44,7 @@ type ProjectDetailPageProps = {
 const projectStatusOptions = Object.values(ProjectStatus);
 const projectPriorityOptions = Object.values(ProjectPriority);
 const visibilityOptions = Object.values(Visibility);
+const serviceCategoryOptions = Object.values(ServiceCategory);
 const milestoneStatusOptions = Object.values(MilestoneStatus);
 const deliverableStatusOptions = Object.values(DeliverableStatus);
 
@@ -70,12 +73,22 @@ export default async function ProjectDetailPage({
 
   return (
     <section className="px-5 py-8 lg:px-10">
-      <Link
-        href="/owner/projects"
-        className="text-sm text-white/45 hover:text-white"
-      >
-        ← Back to projects
-      </Link>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link
+          href="/owner/projects"
+          className="text-sm text-white/45 hover:text-white"
+        >
+          ← Back to projects
+        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/owner/projects/${project.id}/work-page`}
+            className="rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-white/90"
+          >
+            Work Page
+          </Link>
+        </div>
+      </div>
 
       <div className="mt-8 flex flex-col justify-between gap-6 xl:flex-row xl:items-end">
         <div>
@@ -90,27 +103,45 @@ export default async function ProjectDetailPage({
           </p>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-5">
-          <p className="text-xs uppercase tracking-[0.22em] text-white/35">
-            Status
-          </p>
-          <p className="mt-2 text-lg font-semibold">
-            {formatEnumLabel(project.status)}
-          </p>
-          <p className="mt-2 text-xs text-white/35">
-            Budget{" "}
-            {formatCurrencyFromCents(project.budgetCents, project.currency)}
-          </p>
+        <div className="grid gap-3 sm:grid-cols-2 xl:w-[520px]">
+          <Link
+            href={`/owner/projects/${project.id}/before-after`}
+            className="flex min-h-32 flex-col justify-between rounded-3xl border border-white/10 bg-white/[0.035] p-5 transition hover:bg-white/[0.06]"
+          >
+            <p className="text-xs uppercase tracking-[0.22em] text-white/35">
+              Proof
+            </p>
+            <div>
+              <p className="text-lg font-semibold">Before / After</p>
+              <p className="mt-2 text-xs text-white/35">
+                {project._count.beforeAfterAssets} assets uploaded
+              </p>
+            </div>
+          </Link>
+
+          <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-5">
+            <p className="text-xs uppercase tracking-[0.22em] text-white/35">
+              Status
+            </p>
+            <p className="mt-2 text-lg font-semibold">
+              {formatEnumLabel(project.status)}
+            </p>
+            <p className="mt-2 text-xs text-white/35">
+              Budget{" "}
+              {formatCurrencyFromCents(project.budgetCents, project.currency)}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="mt-10 grid gap-4 md:grid-cols-5">
+      <div className="mt-10 grid gap-4 md:grid-cols-3 xl:grid-cols-6">
         {[
           { label: "Milestones", value: project._count.milestones },
           { label: "Deliverables", value: project._count.deliverables },
           { label: "Updates", value: project._count.updates },
           { label: "Tasks", value: project._count.tasks },
           { label: "Notes", value: project._count.notes },
+          { label: "Proof", value: project._count.beforeAfterAssets },
         ].map((item) => (
           <div
             key={item.label}
@@ -128,6 +159,24 @@ export default async function ProjectDetailPage({
           className="rounded-3xl border border-white/10 bg-white/[0.035] p-6"
         >
           <h2 className="text-xl font-semibold">Project details</h2>
+
+          {project.client?.logoUrl ? (
+            <div className="mb-6 flex items-center gap-4 rounded-3xl border border-white/10 bg-black/30 p-4">
+              <Image
+                src={project.client.logoUrl}
+                alt={`${project.client.name} logo`}
+                width={80}
+                height={80}
+                className="h-16 w-16 rounded-2xl object-contain"
+              />
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-white/35">
+                  Client logo preview
+                </p>
+                <p className="mt-1 font-semibold">{project.client.name}</p>
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-6 grid gap-5 md:grid-cols-2">
             <label className="grid gap-2 md:col-span-2">
@@ -296,6 +345,120 @@ export default async function ProjectDetailPage({
               className="min-h-32 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
             />
           </label>
+
+          <div className="mt-6 rounded-3xl border border-emerald-300/20 bg-emerald-300/[0.045] p-5">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-200/70">
+                  Public proof of work
+                </p>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-white/50">
+                  Enable this project to appear on the public Services page.
+                  Only public-enabled before/after assets will be shown.
+                </p>
+              </div>
+
+              <label className="flex items-center gap-3 text-sm text-white/70">
+                <input
+                  name="showcaseEnabled"
+                  type="checkbox"
+                  defaultChecked={project.showcaseEnabled}
+                  className="h-4 w-4 accent-emerald-300"
+                />
+                Show publicly
+              </label>
+            </div>
+
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+              <label className="grid gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                  Service category
+                </span>
+                <select
+                  name="showcaseService"
+                  defaultValue={project.showcaseService ?? ""}
+                  className="h-12 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none focus:border-white/25"
+                >
+                  <option value="">Not selected</option>
+                  {serviceCategoryOptions.map((service) => (
+                    <option key={service} value={service}>
+                      {formatEnumLabel(service)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                  Sort order
+                </span>
+                <input
+                  name="showcaseSortOrder"
+                  type="number"
+                  defaultValue={project.showcaseSortOrder}
+                  className="h-12 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none focus:border-white/25"
+                />
+              </label>
+
+              <label className="grid gap-2 md:col-span-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                  Public title
+                </span>
+                <input
+                  name="showcaseTitle"
+                  defaultValue={project.showcaseTitle ?? ""}
+                  placeholder={project.name}
+                  className="h-12 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
+                />
+              </label>
+            </div>
+
+            <label className="mt-5 grid gap-2">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                Public summary
+              </span>
+              <textarea
+                name="showcaseSummary"
+                defaultValue={project.showcaseSummary ?? ""}
+                className="min-h-24 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
+              />
+            </label>
+
+            <div className="mt-5 grid gap-5 md:grid-cols-3">
+              <label className="grid gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                  Problem
+                </span>
+                <textarea
+                  name="showcaseProblem"
+                  defaultValue={project.showcaseProblem ?? ""}
+                  className="min-h-24 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                  Solution
+                </span>
+                <textarea
+                  name="showcaseSolution"
+                  defaultValue={project.showcaseSolution ?? ""}
+                  className="min-h-24 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                  Results
+                </span>
+                <textarea
+                  name="showcaseResults"
+                  defaultValue={project.showcaseResults ?? ""}
+                  className="min-h-24 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
+                />
+              </label>
+            </div>
+          </div>
 
           <div className="mt-6 flex justify-end">
             <button

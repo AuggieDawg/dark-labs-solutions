@@ -5,7 +5,10 @@ import { notFound } from "next/navigation";
 import { requireOwner } from "@/lib/auth/require";
 import { prisma } from "@/lib/db/prisma";
 import { formatTimestamp } from "@/lib/utils/format";
-import { createProjectBeforeAfterAssetAction } from "@/server/actions/project-before-after";
+import {
+  createProjectBeforeAfterAssetAction,
+  updateProjectBeforeAfterAssetAction,
+} from "@/server/actions/project-before-after";
 
 export const dynamic = "force-dynamic";
 
@@ -146,6 +149,15 @@ export default async function ProjectBeforeAfterPage({
           </label>
         </div>
 
+        <label className="flex items-center gap-3 text-sm text-white/60">
+          <input
+            name="publicEnabled"
+            type="checkbox"
+            className="h-4 w-4 accent-emerald-300"
+          />
+          Make this public proof
+        </label>
+
         <div className="flex justify-end">
           <button
             type="submit"
@@ -168,66 +180,111 @@ export default async function ProjectBeforeAfterPage({
             </p>
           </div>
         ) : (
-          project.beforeAfterAssets.map((asset) => (
-            <article
-              key={asset.id}
-              className="rounded-3xl border border-white/10 bg-white/[0.025] p-5"
-            >
-              <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
-                <div>
-                  <h2 className="text-xl font-semibold">
-                    {asset.label || "Before / After"}
-                  </h2>
-                  <p className="mt-2 text-sm text-white/45">
-                    {asset.notes || "No notes added."}
-                  </p>
-                </div>
-                <p className="text-xs text-white/35">
-                  Uploaded {formatTimestamp(asset.createdAt)}
-                </p>
-              </div>
+          project.beforeAfterAssets.map((asset) => {
+            const updateAsset = updateProjectBeforeAfterAssetAction.bind(
+              null,
+              asset.id,
+            );
 
-              <div className="mt-5 grid gap-4 lg:grid-cols-2">
-                <div className="rounded-3xl border border-white/10 bg-black/40 p-3">
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-white/35">
-                    Before
-                  </p>
-                  {asset.beforeImageUrl ? (
-                    <Image
-                      src={asset.beforeImageUrl}
-                      alt={`${asset.label || project.name} before`}
-                      width={1400}
-                      height={900}
-                      className="h-auto w-full rounded-2xl object-cover"
-                    />
-                  ) : (
-                    <div className="grid aspect-video place-items-center rounded-2xl border border-white/10 text-sm text-white/35">
-                      No before image
-                    </div>
-                  )}
-                </div>
+            return (
+              <article
+                key={asset.id}
+                className="rounded-3xl border border-white/10 bg-white/[0.025] p-5"
+              >
+                <form
+                  action={updateAsset}
+                  className="flex flex-col justify-between gap-3 md:flex-row md:items-end"
+                >
+                  <div className="grid flex-1 gap-3 md:grid-cols-2">
+                    <label className="grid gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                        Label
+                      </span>
+                      <input
+                        name="label"
+                        defaultValue={asset.label ?? ""}
+                        className="h-11 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
+                      />
+                    </label>
 
-                <div className="rounded-3xl border border-white/10 bg-black/40 p-3">
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-white/35">
-                    After
-                  </p>
-                  {asset.afterImageUrl ? (
-                    <Image
-                      src={asset.afterImageUrl}
-                      alt={`${asset.label || project.name} after`}
-                      width={1400}
-                      height={900}
-                      className="h-auto w-full rounded-2xl object-cover"
-                    />
-                  ) : (
-                    <div className="grid aspect-video place-items-center rounded-2xl border border-white/10 text-sm text-white/35">
-                      No after image
-                    </div>
-                  )}
+                    <label className="grid gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                        Notes
+                      </span>
+                      <input
+                        name="notes"
+                        defaultValue={asset.notes ?? ""}
+                        className="h-11 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid gap-3">
+                    <p className="text-xs text-white/35">
+                      Uploaded {formatTimestamp(asset.createdAt)}
+                    </p>
+
+                    <label className="flex items-center gap-3 text-sm text-white/60">
+                      <input
+                        name="publicEnabled"
+                        type="checkbox"
+                        defaultChecked={asset.publicEnabled}
+                        className="h-4 w-4 accent-emerald-300"
+                      />
+                      Public visibility
+                    </label>
+
+                    <button
+                      type="submit"
+                      className="h-10 rounded-full border border-white/10 bg-white/[0.06] px-4 text-xs font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/[0.1]"
+                    >
+                      Save Asset
+                    </button>
+                  </div>
+                </form>
+
+                <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                  <div className="rounded-3xl border border-white/10 bg-black/40 p-3">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-white/35">
+                      Before
+                    </p>
+                    {asset.beforeImageUrl ? (
+                      <Image
+                        src={asset.beforeImageUrl}
+                        alt={`${asset.label || project.name} before`}
+                        width={1400}
+                        height={900}
+                        className="h-auto w-full rounded-2xl object-cover"
+                      />
+                    ) : (
+                      <div className="grid aspect-video place-items-center rounded-2xl border border-white/10 text-sm text-white/35">
+                        No before image
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-3xl border border-white/10 bg-black/40 p-3">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-white/35">
+                      After
+                    </p>
+                    {asset.afterImageUrl ? (
+                      <Image
+                        src={asset.afterImageUrl}
+                        alt={`${asset.label || project.name} after`}
+                        width={1400}
+                        height={900}
+                        className="h-auto w-full rounded-2xl object-cover"
+                      />
+                    ) : (
+                      <div className="grid aspect-video place-items-center rounded-2xl border border-white/10 text-sm text-white/35">
+                        No after image
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))
+              </article>
+            );
+          })
         )}
       </div>
     </section>

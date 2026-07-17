@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${APP_CONFIG.companyName} | Intelligent Business Systems`,
+    default: `${APP_CONFIG.companyName} | Custom Websites & Client Acquisition Systems`,
     template: `%s | ${APP_CONFIG.companyName}`,
   },
   description:
-    "Dark Labs builds intelligent websites, automations, dashboards, and private operating platforms for businesses that need modern digital infrastructure.",
+    "Dark Labs builds custom websites, lead funnels, targeted integrations, and measurement systems for established businesses.",
 };
 
 export default function RootLayout({

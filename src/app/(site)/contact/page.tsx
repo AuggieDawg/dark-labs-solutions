@@ -2,12 +2,14 @@ import { APP_CONFIG } from "@/config/app";
 
 export const metadata = {
   title: "Contact",
+  description:
+    "Discuss a custom website, lead funnel, integration, or web analytics engagement with Dark Labs.",
 };
 
 export default function ContactPage() {
   const subject = encodeURIComponent("Dark Labs Project Inquiry");
   const body = encodeURIComponent(
-    "Tell me about the system you want to build:\n\nBusiness name:\nWebsite:\nWhat you need:\nTimeline:\nBudget range:\n",
+    "Tell me about the customer-acquisition system you want to improve:\n\nBusiness name:\nCurrent website:\nWhat you sell:\nHow customers find you today:\nWhere the current process creates friction:\nTimeline:\nBudget range:\n",
   );
 
   const emailHref = `mailto:${APP_CONFIG.contactEmail}?subject=${subject}&body=${body}`;
@@ -20,12 +22,12 @@ export default function ContactPage() {
             Contact
           </p>
           <h1 className="mt-6 text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            Start with the system you actually need.
+            Start with how customers find and contact your business.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/55 md:text-lg">
-            Call directly or send a project inquiry. The goal is to understand
-            the business, the current bottleneck, and what kind of system would
-            create the most leverage.
+            Call directly or send a project inquiry. We will look at the offer,
+            customer flow, current website, lead follow-up, and measurement gap
+            to decide whether the Client Acquisition System is the right fit.
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -51,10 +53,10 @@ export default function ContactPage() {
 
           <div className="mt-8 grid gap-4">
             {[
-              "You need a better website that creates trust and drives calls.",
-              "You need forms, automations, or dashboards to reduce admin chaos.",
-              "You need a client portal or private operating platform.",
-              "You want a long-term technical partner to build systems around the business.",
+              "You have an established service or operation but the website does not represent its real quality.",
+              "Customers struggle to understand the offer or take the next step.",
+              "Website inquiries need better capture, routing, or connection to an existing system.",
+              "You want analytics and post-launch support instead of guessing whether the website works.",
             ].map((item) => (
               <div
                 key={item}
@@ -68,9 +70,10 @@ export default function ContactPage() {
           <div className="mt-8 rounded-3xl border border-white/10 bg-black/35 p-5">
             <p className="text-sm font-semibold text-white">What to include</p>
             <p className="mt-3 text-sm leading-6 text-white/48">
-              Business name, current website, what is not working, what you want
-              the system to do, timeline, and budget range. Better context means
-              a better first conversation.
+              Business name, current website, what you sell, how customers find
+              you today, where the current process creates friction, timeline,
+              and budget range. Better context means a better first
+              conversation.
             </p>
           </div>
         </div>

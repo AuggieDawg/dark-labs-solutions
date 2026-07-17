@@ -1,5 +1,7 @@
 export const metadata = {
   title: "About",
+  description:
+    "Dark Labs is a founder-led custom website and digital systems agency for established businesses.",
 };
 
 export default function AboutPage() {
@@ -11,24 +13,26 @@ export default function AboutPage() {
             About
           </p>
           <h1 className="mt-6 text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            Dark Labs builds operational infrastructure.
+            Custom websites built as measurable business systems.
           </h1>
         </div>
 
         <div className="space-y-6 text-base leading-8 text-white/55 md:text-lg">
           <p>
-            Dark Labs exists to help serious businesses modernize the systems
-            behind their work: websites, automations, dashboards, client
-            portals, and internal operating platforms.
+            Dark Labs is a custom website and digital systems agency for
+            established businesses that need more leads, better visibility, and
+            less operational friction.
           </p>
           <p>
-            The company is being built around disciplined engineering,
-            workspace-based access control, professional design, and practical
-            business outcomes.
+            Each engagement begins with the customer flow, then connects a
+            conversion-focused website, lead path, targeted integrations, and
+            measurement around the way the business actually operates.
           </p>
           <p>
-            The long-term goal is to turn repeated client needs into reusable
-            software infrastructure.
+            You work directly with the person designing, building, launching,
+            and supporting the system. After launch, Dark Labs validates the
+            conversion path and measures what happens during stabilization
+            before recommending the next investment.
           </p>
         </div>
       </div>

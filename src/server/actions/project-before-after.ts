@@ -1,20 +1,10 @@
 "use server";
 
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
-import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 
 import { requireOwner } from "@/lib/auth/require";
 import { prisma } from "@/lib/db/prisma";
-
-const MAX_IMAGE_SIZE = 12 * 1024 * 1024;
-
-const ALLOWED_IMAGE_TYPES = new Map([
-  ["image/jpeg", "jpg"],
-  ["image/png", "png"],
-  ["image/webp", "webp"],
-]);
+import { savePublicImageUpload } from "@/lib/uploads/images";
 
 function optionalText(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -53,42 +43,35 @@ async function requireOwnedProject(projectId: string) {
   };
 }
 
-async function saveImageUpload(projectId: string, file: File | null) {
-  if (!file || file.size === 0) {
-    return null;
-  }
+async function requireOwnedBeforeAfterAsset(assetId: string) {
+  const owner = await requireOwner();
 
-  const extension = ALLOWED_IMAGE_TYPES.get(file.type);
-
-  if (!extension) {
-    throw new Error("Only JPG, PNG, and WebP images are supported");
-  }
-
-  if (file.size > MAX_IMAGE_SIZE) {
-    throw new Error("Image is too large. Max size is 12MB.");
-  }
-
-  const uploadDir = path.join(
-    process.cwd(),
-    "public",
-    "uploads",
-    "projects",
-    projectId,
-    "before-after",
-  );
-
-  await mkdir(uploadDir, {
-    recursive: true,
+  const asset = await prisma.projectBeforeAfterAsset.findFirst({
+    where: {
+      id: assetId,
+      project: {
+        workspaceId: owner.workspaceId,
+      },
+    },
+    include: {
+      project: {
+        select: {
+          id: true,
+          name: true,
+          workspaceId: true,
+        },
+      },
+    },
   });
 
-  const filename = `${Date.now()}-${randomUUID()}.${extension}`;
-  const absolutePath = path.join(uploadDir, filename);
-  const publicUrl = `/uploads/projects/${projectId}/before-after/${filename}`;
+  if (!asset) {
+    throw new Error("Before/after asset not found");
+  }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(absolutePath, buffer);
-
-  return publicUrl;
+  return {
+    owner,
+    asset,
+  };
 }
 
 export async function createProjectBeforeAfterAssetAction(
@@ -110,8 +93,14 @@ export async function createProjectBeforeAfterAssetAction(
   }
 
   const [beforeImageUrl, afterImageUrl] = await Promise.all([
-    saveImageUpload(project.id, beforeImage),
-    saveImageUpload(project.id, afterImage),
+    savePublicImageUpload({
+      file: beforeImage,
+      segments: ["projects", project.id, "before-after"],
+    }),
+    savePublicImageUpload({
+      file: afterImage,
+      segments: ["projects", project.id, "before-after"],
+    }),
   ]);
 
   const asset = await prisma.projectBeforeAfterAsset.create({
@@ -121,6 +110,7 @@ export async function createProjectBeforeAfterAssetAction(
       notes: optionalText(formData, "notes"),
       beforeImageUrl,
       afterImageUrl,
+      publicEnabled: formData.get("publicEnabled") === "on",
     },
   });
 
@@ -136,6 +126,7 @@ export async function createProjectBeforeAfterAssetAction(
         projectId: project.id,
         hasBefore: Boolean(beforeImageUrl),
         hasAfter: Boolean(afterImageUrl),
+        publicEnabled: asset.publicEnabled,
       },
     },
   });
@@ -144,4 +135,44 @@ export async function createProjectBeforeAfterAssetAction(
   revalidatePath("/owner/projects");
   revalidatePath(`/owner/projects/${project.id}`);
   revalidatePath(`/owner/projects/${project.id}/before-after`);
+  revalidatePath("/services");
+}
+
+export async function updateProjectBeforeAfterAssetAction(
+  assetId: string,
+  formData: FormData,
+) {
+  const { owner, asset } = await requireOwnedBeforeAfterAsset(assetId);
+
+  const updated = await prisma.projectBeforeAfterAsset.update({
+    where: {
+      id: asset.id,
+    },
+    data: {
+      label: optionalText(formData, "label"),
+      notes: optionalText(formData, "notes"),
+      publicEnabled: formData.get("publicEnabled") === "on",
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      workspaceId: owner.workspaceId,
+      actorId: owner.userId,
+      entityType: "ProjectBeforeAfterAsset",
+      entityId: updated.id,
+      action: "project_before_after.updated",
+      summary: `Updated before/after asset on ${asset.project.name}`,
+      metadata: {
+        projectId: asset.project.id,
+        publicEnabled: updated.publicEnabled,
+      },
+    },
+  });
+
+  revalidatePath("/owner");
+  revalidatePath("/owner/projects");
+  revalidatePath(`/owner/projects/${asset.project.id}`);
+  revalidatePath(`/owner/projects/${asset.project.id}/before-after`);
+  revalidatePath("/services");
 }

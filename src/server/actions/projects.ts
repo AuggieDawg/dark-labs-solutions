@@ -8,6 +8,7 @@ import {
   MilestoneStatus,
   ProjectPriority,
   ProjectStatus,
+  ServiceCategory,
   Visibility,
 } from "@/generated/prisma";
 
@@ -18,6 +19,7 @@ import { slugify } from "@/lib/utils/slug";
 const PROJECT_STATUS_VALUES = new Set<string>(Object.values(ProjectStatus));
 const PROJECT_PRIORITY_VALUES = new Set<string>(Object.values(ProjectPriority));
 const VISIBILITY_VALUES = new Set<string>(Object.values(Visibility));
+const SERVICE_CATEGORY_VALUES = new Set<string>(Object.values(ServiceCategory));
 const MILESTONE_STATUS_VALUES = new Set<string>(Object.values(MilestoneStatus));
 const DELIVERABLE_STATUS_VALUES = new Set<string>(
   Object.values(DeliverableStatus),
@@ -33,6 +35,32 @@ function optionalText(formData: FormData, key: string) {
   const trimmed = value.trim();
 
   return trimmed || null;
+}
+
+function checkboxValue(formData: FormData, key: string) {
+  return formData.get(key) === "on";
+}
+
+function optionalHttpUrl(formData: FormData, key: string) {
+  const value = optionalText(formData, key);
+
+  if (!value) {
+    return null;
+  }
+
+  let url: URL;
+
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error("Website URL must be a valid absolute URL");
+  }
+
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new Error("Website URL must use http or https");
+  }
+
+  return url.toString();
 }
 
 function requiredText(formData: FormData, key: string, label: string) {
@@ -53,6 +81,18 @@ function optionalDate(formData: FormData, key: string) {
   }
 
   return new Date(`${value}T12:00:00.000Z`);
+}
+
+function optionalInt(formData: FormData, key: string) {
+  const value = optionalText(formData, key);
+
+  if (!value) {
+    return 0;
+  }
+
+  const parsed = Number.parseInt(value, 10);
+
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function optionalBudgetCents(formData: FormData, key: string) {
@@ -100,6 +140,14 @@ function parseVisibility(value: FormDataEntryValue | null) {
   return VISIBILITY_VALUES.has(value)
     ? (value as Visibility)
     : Visibility.OWNER_ONLY;
+}
+
+function parseServiceCategory(value: FormDataEntryValue | null) {
+  if (typeof value !== "string" || !value) {
+    return null;
+  }
+
+  return SERVICE_CATEGORY_VALUES.has(value) ? (value as ServiceCategory) : null;
 }
 
 function parseMilestoneStatus(value: FormDataEntryValue | null) {
@@ -182,6 +230,8 @@ async function requireOwnedProject(projectId: string) {
       id: true,
       name: true,
       workspaceId: true,
+      workPageEnabled: true,
+      workPublishedAt: true,
     },
   });
 
@@ -193,6 +243,120 @@ async function requireOwnedProject(projectId: string) {
     owner,
     project,
   };
+}
+
+export async function updateProjectWorkPageAction(
+  projectId: string,
+  formData: FormData,
+) {
+  const { owner, project } = await requireOwnedProject(projectId);
+  const workPageEnabled = checkboxValue(formData, "workPageEnabled");
+
+  const updated = await prisma.project.update({
+    where: {
+      id: project.id,
+    },
+    data: {
+      workPageEnabled,
+      workTitle: optionalText(formData, "workTitle"),
+      workClientLabel: optionalText(formData, "workClientLabel"),
+      workSummary: optionalText(formData, "workSummary"),
+      workDescription: optionalText(formData, "workDescription"),
+      workChallenge: optionalText(formData, "workChallenge"),
+      workSolution: optionalText(formData, "workSolution"),
+      workOutcome: optionalText(formData, "workOutcome"),
+      workWebsiteUrl: optionalHttpUrl(formData, "workWebsiteUrl"),
+      workSortOrder:
+        Number.parseInt(optionalText(formData, "workSortOrder") || "0", 10) ||
+        0,
+      workPublishedAt: workPageEnabled
+        ? (project.workPublishedAt ?? new Date())
+        : null,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      workspaceId: owner.workspaceId,
+      actorId: owner.userId,
+      entityType: "Project",
+      entityId: project.id,
+      action: workPageEnabled
+        ? "project.work_page_published"
+        : "project.work_page_unpublished",
+      summary: `${workPageEnabled ? "Published" : "Removed"} ${project.name} ${
+        workPageEnabled ? "on" : "from"
+      } the Work page`,
+      metadata: {
+        previousState: project.workPageEnabled,
+        currentState: updated.workPageEnabled,
+      },
+    },
+  });
+
+  revalidatePath("/work");
+  revalidatePath("/owner");
+  revalidatePath("/owner/projects");
+  revalidatePath(`/owner/projects/${project.id}`);
+  revalidatePath(`/owner/projects/${project.id}/work-page`);
+}
+
+export async function toggleProjectUpdateWorkPageAction(
+  projectId: string,
+  updateId: string,
+  _formData: FormData,
+) {
+  void _formData;
+  const { owner, project } = await requireOwnedProject(projectId);
+
+  const update = await prisma.projectUpdate.findFirst({
+    where: {
+      id: updateId,
+      projectId: project.id,
+    },
+    select: {
+      id: true,
+      showOnWorkPage: true,
+    },
+  });
+
+  if (!update) {
+    throw new Error("Project update not found");
+  }
+
+  const showOnWorkPage = !update.showOnWorkPage;
+
+  await prisma.projectUpdate.update({
+    where: {
+      id: update.id,
+    },
+    data: {
+      showOnWorkPage,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      workspaceId: owner.workspaceId,
+      actorId: owner.userId,
+      entityType: "ProjectUpdate",
+      entityId: update.id,
+      action: showOnWorkPage
+        ? "project_update.work_page_published"
+        : "project_update.work_page_unpublished",
+      summary: `${showOnWorkPage ? "Published" : "Removed"} an update ${
+        showOnWorkPage ? "on" : "from"
+      } the Work page for ${project.name}`,
+      metadata: {
+        projectId: project.id,
+        showOnWorkPage,
+      },
+    },
+  });
+
+  revalidatePath("/work");
+  revalidatePath(`/owner/projects/${project.id}`);
+  revalidatePath(`/owner/projects/${project.id}/work-page`);
 }
 
 export async function createProjectAction(formData: FormData) {
@@ -222,6 +386,14 @@ export async function createProjectAction(formData: FormData) {
       dueDate: optionalDate(formData, "dueDate"),
       budgetCents: optionalBudgetCents(formData, "budgetDollars"),
       currency: optionalText(formData, "currency") || "USD",
+      showcaseEnabled: formData.get("showcaseEnabled") === "on",
+      showcaseService: parseServiceCategory(formData.get("showcaseService")),
+      showcaseTitle: optionalText(formData, "showcaseTitle"),
+      showcaseSummary: optionalText(formData, "showcaseSummary"),
+      showcaseProblem: optionalText(formData, "showcaseProblem"),
+      showcaseSolution: optionalText(formData, "showcaseSolution"),
+      showcaseResults: optionalText(formData, "showcaseResults"),
+      showcaseSortOrder: optionalInt(formData, "showcaseSortOrder"),
     },
   });
 
@@ -244,6 +416,7 @@ export async function createProjectAction(formData: FormData) {
   revalidatePath("/owner");
   revalidatePath("/owner/projects");
   revalidatePath("/owner/clients");
+  revalidatePath("/services");
 
   redirect(`/owner/projects/${project.id}`);
 }
@@ -277,6 +450,14 @@ export async function updateProjectAction(
       dueDate: optionalDate(formData, "dueDate"),
       budgetCents: optionalBudgetCents(formData, "budgetDollars"),
       currency: optionalText(formData, "currency") || "USD",
+      showcaseEnabled: formData.get("showcaseEnabled") === "on",
+      showcaseService: parseServiceCategory(formData.get("showcaseService")),
+      showcaseTitle: optionalText(formData, "showcaseTitle"),
+      showcaseSummary: optionalText(formData, "showcaseSummary"),
+      showcaseProblem: optionalText(formData, "showcaseProblem"),
+      showcaseSolution: optionalText(formData, "showcaseSolution"),
+      showcaseResults: optionalText(formData, "showcaseResults"),
+      showcaseSortOrder: optionalInt(formData, "showcaseSortOrder"),
     },
   });
 
@@ -300,6 +481,7 @@ export async function updateProjectAction(
   revalidatePath("/owner/projects");
   revalidatePath(`/owner/projects/${project.id}`);
   revalidatePath("/owner/clients");
+  revalidatePath("/services");
 }
 
 export async function createProjectMilestoneAction(

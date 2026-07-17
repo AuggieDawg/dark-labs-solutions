@@ -8,7 +8,6 @@ Expected filenames used by the current UI:
 - services-websites.mp4
 - services-automations.mp4
 - services-dashboards.mp4
-- services-platforms.mp4
 
 Recommended specs:
 

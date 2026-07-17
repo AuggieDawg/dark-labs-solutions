@@ -16,20 +16,16 @@ export function SiteNav() {
         <Link
           href="/"
           aria-label="Dark Labs home"
-          className="pointer-events-auto group inline-flex items-center gap-3"
+          className="pointer-events-auto group inline-flex items-center"
         >
           <Image
-            src="/brand/dark-labs-mark.png"
-            alt=""
-            width={88}
-            height={88}
+            src="/brand/dark-labs-logo.png"
+            alt="Dark Labs"
+            width={320}
+            height={180}
             priority
-            className="h-14 w-14 object-contain drop-shadow-[0_0_22px_rgba(255,255,255,0.20)] transition duration-300 group-hover:scale-105 md:h-[72px] md:w-[72px]"
+            className="h-14 w-auto max-w-[190px] object-contain drop-shadow-[0_0_22px_rgba(255,255,255,0.18)] transition duration-300 group-hover:scale-[1.03] md:h-16 md:max-w-[240px]"
           />
-
-          <span className="hidden text-sm font-semibold uppercase tracking-[0.32em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.75)] sm:inline">
-            {APP_CONFIG.companyName}
-          </span>
         </Link>
 
         <nav className="pointer-events-auto hidden items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 shadow-2xl shadow-black/35 backdrop-blur-xl md:flex">

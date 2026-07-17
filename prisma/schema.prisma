@@ -20,6 +20,13 @@ enum Visibility {
   CLIENT_VISIBLE
 }
 
+enum ServiceCategory {
+  WEBSITES
+  AUTOMATIONS
+  DASHBOARDS
+  PLATFORMS
+}
+
 enum ClientStatus {
   LEAD
   ACTIVE
@@ -213,6 +220,7 @@ model Client {
   source        String?
   summary       String?
   internalNotes String?
+  logoUrl       String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -263,12 +271,35 @@ model Project {
   clientVisibleSummary String?
   internalNotes        String?
 
+  // Public case-study controls. These fields are the only project copy exposed
+  // on the Work page; internal and client-visible fields stay private.
+  workPageEnabled Boolean   @default(false)
+  workTitle       String?
+  workClientLabel String?
+  workSummary     String?
+  workDescription String?
+  workChallenge   String?
+  workSolution    String?
+  workOutcome     String?
+  workWebsiteUrl  String?
+  workSortOrder   Int       @default(0)
+  workPublishedAt DateTime?
+
   startDate   DateTime?
   dueDate     DateTime?
   completedAt DateTime?
 
   budgetCents Int?
   currency    String @default("USD")
+
+  showcaseEnabled   Boolean          @default(false)
+  showcaseService   ServiceCategory?
+  showcaseTitle     String?
+  showcaseSummary   String?
+  showcaseProblem   String?
+  showcaseSolution  String?
+  showcaseResults   String?
+  showcaseSortOrder Int              @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -286,6 +317,9 @@ model Project {
   @@unique([workspaceId, slug])
   @@index([workspaceId, status])
   @@index([workspaceId, priority])
+  @@index([workPageEnabled, workSortOrder])
+  @@index([workspaceId, showcaseEnabled])
+  @@index([workspaceId, showcaseService])
   @@index([clientId])
 }
 
@@ -334,9 +368,10 @@ model ProjectUpdate {
   projectId String
   authorId  String?
 
-  title      String?
-  body       String
-  visibility Visibility @default(CLIENT_VISIBLE)
+  title          String?
+  body           String
+  visibility     Visibility @default(CLIENT_VISIBLE)
+  showOnWorkPage Boolean    @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -347,6 +382,7 @@ model ProjectUpdate {
   @@index([projectId])
   @@index([authorId])
   @@index([projectId, visibility])
+  @@index([projectId, showOnWorkPage])
 }
 
 model Task {
@@ -523,6 +559,7 @@ model ProjectBeforeAfterAsset {
   beforeImageUrl String?
   afterImageUrl  String?
   notes          String?
+  publicEnabled  Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

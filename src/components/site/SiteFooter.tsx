@@ -11,8 +11,8 @@ export function SiteFooter() {
             {APP_CONFIG.companyName}
           </p>
           <p className="mt-4 max-w-md text-sm leading-6 text-white/45">
-            Intelligent websites, automations, dashboards, client portals, and
-            private operating platforms for serious operators.
+            Custom websites, lead funnels, targeted integrations, and measurable
+            post-launch improvement for established businesses.
           </p>
         </div>
 
@@ -36,7 +36,7 @@ export function SiteFooter() {
 
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/35">
-              Platform
+              Access
             </p>
             <div className="mt-4 grid gap-3 text-sm text-white/45">
               <Link href="/owner" className="hover:text-white">
@@ -44,9 +44,6 @@ export function SiteFooter() {
               </Link>
               <Link href="/sign-in" className="hover:text-white">
                 Sign In
-              </Link>
-              <Link href="/portal" className="hover:text-white">
-                Client Portal
               </Link>
             </div>
           </div>
@@ -56,10 +53,10 @@ export function SiteFooter() {
       <div className="border-t border-white/10 px-6 py-5">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 text-xs text-white/30 md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} Dark Labs. Built as operating
-            infrastructure.
+            © {new Date().getFullYear()} Dark Labs. Built to turn attention into
+            measurable action.
           </p>
-          <p className="font-mono">workspace-scoped / owner-controlled</p>
+          <p className="font-mono">founder-led / measurement-ready</p>
         </div>
       </div>
     </footer>
