@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Work",
   description:
-    "Selected Dark Labs website, automation, dashboard, and platform case studies.",
+    "Selected Dark Labs custom website, lead funnel, integration, and web analytics case studies.",
 };
 
 export default async function WorkPage() {
@@ -52,7 +52,7 @@ export default async function WorkPage() {
             Selected work
           </p>
           <h1 className="mt-6 max-w-5xl text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            Real systems built around real businesses.
+            Real acquisition systems built around real businesses.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/55 md:text-lg">
             Each project documents the problem, the system Dark Labs built, and
@@ -189,7 +189,7 @@ export default async function WorkPage() {
               Your project
             </p>
             <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-              Build the next measurable business system.
+              Build the next measurable customer-acquisition system.
             </h2>
           </div>
           <Link
