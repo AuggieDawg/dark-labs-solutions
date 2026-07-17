@@ -1,98 +1,81 @@
 import Link from "next/link";
 
 import { VideoBackdrop } from "@/components/site/VideoBackdrop";
-import { APP_CONFIG } from "@/config/app";
 
 export const metadata = {
-  title: "Services",
+  title: "Custom Website & Analytics Services",
+  description:
+    "Custom websites, lead funnels, targeted integrations, and web analytics for established businesses.",
 };
 
 const servicePanels = [
   {
     id: "websites",
     number: "01",
-    title: "Websites",
+    title: "Custom Websites",
     description:
-      "Premium public presence built to create trust and convert attention.",
+      "Conversion-focused websites built around trust, visibility, and a clear path to contact.",
     video: "/videos/services-websites.mp4",
   },
   {
-    id: "automations",
+    id: "funnels-integrations",
     number: "02",
-    title: "Automations",
+    title: "Funnels + Integrations",
     description:
-      "Repeatable workflows that remove manual drag from the business.",
+      "Lead paths and targeted connections that move inquiries into the systems your business already uses.",
     video: "/videos/services-automations.mp4",
   },
   {
-    id: "dashboards",
+    id: "web-analytics",
     number: "03",
-    title: "Dashboards",
-    description: "Owner visibility, operational metrics, and decision support.",
-    video: "/videos/services-dashboards.mp4",
-  },
-  {
-    id: "platforms",
-    number: "04",
-    title: "Platforms",
+    title: "Web Analytics",
     description:
-      "Client portals, command centers, and private operating systems.",
-    video: "/videos/services-platforms.mp4",
+      "Conversion measurement and reporting that show what customers do after they arrive.",
+    video: "/videos/services-dashboards.mp4",
   },
 ];
 
 const serviceDetails = [
   {
+    id: "websites",
     number: "01",
-    title: "Websites",
-    headline: "A website should be an acquisition system, not a brochure.",
-    body: "Dark Labs websites are built around positioning, clarity, conversion flow, mobile performance, search-ready structure, and premium visual trust. The goal is not decoration. The goal is to make the business easier to understand, easier to trust, and easier to contact.",
+    title: "Custom Websites",
+    headline: "Turn your website into a measurable acquisition system.",
+    body: "Dark Labs designs and builds custom websites around the way an established business earns trust and wins customers. Each build connects positioning, customer flow, conversion paths, technical SEO, mobile performance, and measurement instead of treating the site as a digital brochure.",
     bullets: [
-      "Brand and content architecture",
-      "Landing pages and core service pages",
-      "Conversion-focused calls to action",
-      "Responsive implementation",
-      "Analytics-ready structure",
+      "Business and customer-flow discovery",
+      "Custom interface and content architecture",
+      "Service or inventory funnels",
+      "Mobile, SEO, and performance foundation",
+      "Lead capture and conversion paths",
     ],
   },
   {
+    id: "funnels-integrations",
     number: "02",
-    title: "Automations",
-    headline: "Manual work compounds into hidden operational cost.",
-    body: "Automation should remove friction from repeated workflows: lead intake, follow-up, internal notifications, task creation, client handoff, and administrative cleanup. The strongest automations are invisible because the business simply moves faster.",
+    title: "Funnels + Integrations",
+    headline: "Make every inquiry easier to capture, route, and follow up.",
+    body: "A useful funnel continues after the button click. Dark Labs can connect forms, inventory, booking, CRM, email, and notification tools where those connections protect the customer journey and reduce operational friction. The existing business system remains the source of truth unless replacement is explicitly part of the engagement.",
     bullets: [
-      "Lead routing and intake flows",
-      "Form-to-dashboard workflows",
-      "Email and notification systems",
-      "Internal task generation",
-      "Repeatable operating procedures",
+      "Lead capture and routing",
+      "Form, booking, CRM, or inventory connections",
+      "Confirmation and follow-up paths",
+      "Attribution fields and conversion events",
+      "Integration testing and failure handling",
     ],
   },
   {
+    id: "web-analytics",
     number: "03",
-    title: "Dashboards",
-    headline: "Visibility is the first step toward control.",
-    body: "Owners need to see what is happening without hunting through spreadsheets, texts, inboxes, and memory. Dashboards turn scattered business activity into a single source of truth.",
+    title: "Web Analytics",
+    headline: "Measure customer behavior that can guide the next decision.",
+    body: "Dark Labs establishes meaningful conversion events, validates the data, and reports what is happening after launch. The goal is not to overwhelm owners with pageviews. It is to connect visibility, engagement, inquiries, and operational follow-up to a practical optimization backlog.",
     bullets: [
-      "Client and project visibility",
-      "Operational KPIs",
-      "Lead and pipeline tracking",
-      "Project health summaries",
-      "Custom internal reporting",
-    ],
-  },
-  {
-    number: "04",
-    title: "Platforms",
-    headline:
-      "Some businesses need software built around how they actually operate.",
-    body: "When off-the-shelf tools create more friction than leverage, a private operating platform can unify clients, projects, tasks, notes, documents, and future automation into one controlled system.",
-    bullets: [
-      "Owner command centers",
-      "Client portals",
-      "Project management systems",
-      "Task and goal workbenches",
-      "Knowledge and automation layers",
+      "Analytics and conversion-event foundation",
+      "Data-quality and attribution checks",
+      "Launch baseline and 60-day reporting",
+      "Conversion-path analysis",
+      "Prioritized SEO and funnel recommendations",
     ],
   },
 ];
@@ -100,7 +83,7 @@ const serviceDetails = [
 export default function ServicesPage() {
   return (
     <main className="bg-black text-white">
-      <section className="grid min-h-[100svh] border-b border-white/10 lg:grid-cols-4">
+      <section className="grid min-h-[100svh] border-b border-white/10 lg:grid-cols-3">
         {servicePanels.map((service) => (
           <a
             key={service.id}
@@ -117,7 +100,7 @@ export default function ServicesPage() {
                     {service.number}
                   </p>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/30">
-                    Service
+                    Acquisition layer
                   </p>
                 </div>
 
@@ -145,29 +128,29 @@ export default function ServicesPage() {
       <section className="border-b border-white/10 px-6 py-24 md:py-32">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-semibold uppercase tracking-[0.42em] text-white/35">
-            Services
+            Dark Labs services
           </p>
           <h1 className="mt-6 max-w-5xl text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            Four layers of modern business infrastructure.
+            One acquisition system. Three connected layers.
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-white/55 md:text-lg">
-            The public site attracts attention. The automations reduce drag. The
-            dashboards create visibility. The platform becomes the operating
-            system behind the work.
+          <p className="mt-6 max-w-3xl text-base leading-8 text-white/55 md:text-lg">
+            The website earns attention and trust. The funnel turns interest
+            into a routed inquiry. The measurement layer shows what happens next
+            so the system can improve after launch.
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <a
-              href={APP_CONFIG.phoneHref}
-              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
-            >
-              Call Now
-            </a>
             <Link
               href="/contact"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
             >
               Start a Project
+            </Link>
+            <Link
+              href="/work"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+            >
+              See Our Work
             </Link>
           </div>
         </div>
@@ -176,8 +159,8 @@ export default function ServicesPage() {
       <section className="divide-y divide-white/10">
         {serviceDetails.map((service) => (
           <article
-            id={`${service.title.toLowerCase()}-details`}
-            key={service.number}
+            id={`${service.id}-details`}
+            key={service.id}
             className="px-6 py-24 md:py-32"
           >
             <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.75fr_1.25fr]">
@@ -211,20 +194,12 @@ export default function ServicesPage() {
                   ))}
                 </div>
 
-                <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                  <a
-                    href={APP_CONFIG.phoneHref}
-                    className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:bg-white/90"
-                  >
-                    Call About {service.title}
-                  </a>
-                  <Link
-                    href="/contact"
-                    className="inline-flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
-                  >
-                    Start a Project
-                  </Link>
-                </div>
+                <Link
+                  href="/contact"
+                  className="mt-10 inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:bg-white/90"
+                >
+                  Discuss {service.title}
+                </Link>
               </div>
             </div>
           </article>
@@ -235,25 +210,25 @@ export default function ServicesPage() {
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-[2rem] border border-white/10 bg-white/[0.035] p-8 md:flex-row md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
-              Ready
+              Start with the customer flow
             </p>
-            <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-              Need a system, not just a site?
+            <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
+              Ready to turn your website into a measurable acquisition system?
             </h2>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <a
-              href={APP_CONFIG.phoneHref}
-              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
-            >
-              Call Now
-            </a>
             <Link
               href="/contact"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+            >
+              Start a Project
+            </Link>
+            <Link
+              href="/work"
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
             >
-              Contact Dark Labs
+              View the Repete Case Study
             </Link>
           </div>
         </div>
