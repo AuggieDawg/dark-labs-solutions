@@ -35,6 +35,32 @@ function optionalText(formData: FormData, key: string) {
   return trimmed || null;
 }
 
+function checkboxValue(formData: FormData, key: string) {
+  return formData.get(key) === "on";
+}
+
+function optionalHttpUrl(formData: FormData, key: string) {
+  const value = optionalText(formData, key);
+
+  if (!value) {
+    return null;
+  }
+
+  let url: URL;
+
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error("Website URL must be a valid absolute URL");
+  }
+
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new Error("Website URL must use http or https");
+  }
+
+  return url.toString();
+}
+
 function requiredText(formData: FormData, key: string, label: string) {
   const value = optionalText(formData, key);
 
@@ -182,6 +208,8 @@ async function requireOwnedProject(projectId: string) {
       id: true,
       name: true,
       workspaceId: true,
+      workPageEnabled: true,
+      workPublishedAt: true,
     },
   });
 
@@ -193,6 +221,120 @@ async function requireOwnedProject(projectId: string) {
     owner,
     project,
   };
+}
+
+export async function updateProjectWorkPageAction(
+  projectId: string,
+  formData: FormData,
+) {
+  const { owner, project } = await requireOwnedProject(projectId);
+  const workPageEnabled = checkboxValue(formData, "workPageEnabled");
+
+  const updated = await prisma.project.update({
+    where: {
+      id: project.id,
+    },
+    data: {
+      workPageEnabled,
+      workTitle: optionalText(formData, "workTitle"),
+      workClientLabel: optionalText(formData, "workClientLabel"),
+      workSummary: optionalText(formData, "workSummary"),
+      workDescription: optionalText(formData, "workDescription"),
+      workChallenge: optionalText(formData, "workChallenge"),
+      workSolution: optionalText(formData, "workSolution"),
+      workOutcome: optionalText(formData, "workOutcome"),
+      workWebsiteUrl: optionalHttpUrl(formData, "workWebsiteUrl"),
+      workSortOrder:
+        Number.parseInt(optionalText(formData, "workSortOrder") || "0", 10) ||
+        0,
+      workPublishedAt: workPageEnabled
+        ? (project.workPublishedAt ?? new Date())
+        : null,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      workspaceId: owner.workspaceId,
+      actorId: owner.userId,
+      entityType: "Project",
+      entityId: project.id,
+      action: workPageEnabled
+        ? "project.work_page_published"
+        : "project.work_page_unpublished",
+      summary: `${workPageEnabled ? "Published" : "Removed"} ${project.name} ${
+        workPageEnabled ? "on" : "from"
+      } the Work page`,
+      metadata: {
+        previousState: project.workPageEnabled,
+        currentState: updated.workPageEnabled,
+      },
+    },
+  });
+
+  revalidatePath("/work");
+  revalidatePath("/owner");
+  revalidatePath("/owner/projects");
+  revalidatePath(`/owner/projects/${project.id}`);
+  revalidatePath(`/owner/projects/${project.id}/work-page`);
+}
+
+export async function toggleProjectUpdateWorkPageAction(
+  projectId: string,
+  updateId: string,
+  _formData: FormData,
+) {
+  void _formData;
+  const { owner, project } = await requireOwnedProject(projectId);
+
+  const update = await prisma.projectUpdate.findFirst({
+    where: {
+      id: updateId,
+      projectId: project.id,
+    },
+    select: {
+      id: true,
+      showOnWorkPage: true,
+    },
+  });
+
+  if (!update) {
+    throw new Error("Project update not found");
+  }
+
+  const showOnWorkPage = !update.showOnWorkPage;
+
+  await prisma.projectUpdate.update({
+    where: {
+      id: update.id,
+    },
+    data: {
+      showOnWorkPage,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      workspaceId: owner.workspaceId,
+      actorId: owner.userId,
+      entityType: "ProjectUpdate",
+      entityId: update.id,
+      action: showOnWorkPage
+        ? "project_update.work_page_published"
+        : "project_update.work_page_unpublished",
+      summary: `${showOnWorkPage ? "Published" : "Removed"} an update ${
+        showOnWorkPage ? "on" : "from"
+      } the Work page for ${project.name}`,
+      metadata: {
+        projectId: project.id,
+        showOnWorkPage,
+      },
+    },
+  });
+
+  revalidatePath("/work");
+  revalidatePath(`/owner/projects/${project.id}`);
+  revalidatePath(`/owner/projects/${project.id}/work-page`);
 }
 
 export async function createProjectAction(formData: FormData) {

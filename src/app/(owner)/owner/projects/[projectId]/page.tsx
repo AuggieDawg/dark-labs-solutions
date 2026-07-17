@@ -70,12 +70,22 @@ export default async function ProjectDetailPage({
 
   return (
     <section className="px-5 py-8 lg:px-10">
-      <Link
-        href="/owner/projects"
-        className="text-sm text-white/45 hover:text-white"
-      >
-        ← Back to projects
-      </Link>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link
+          href="/owner/projects"
+          className="text-sm text-white/45 hover:text-white"
+        >
+          ← Back to projects
+        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/owner/projects/${project.id}/work-page`}
+            className="rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-white/90"
+          >
+            Work Page
+          </Link>
+        </div>
+      </div>
 
       <div className="mt-8 flex flex-col justify-between gap-6 xl:flex-row xl:items-end">
         <div>
