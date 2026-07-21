@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 
-import { ProjectStatus, TaskStatus } from "@/generated/prisma";
+import { ProjectStatus, ProspectStatus, TaskStatus } from "@/generated/prisma";
 import { prisma } from "@/lib/db/prisma";
 import { requireOwner } from "@/lib/auth/require";
 import { formatEnumLabel, formatTimestamp } from "@/lib/utils/format";
@@ -18,6 +18,8 @@ export default async function OwnerDashboardPage() {
   const [
     leadDashboard,
     clients,
+    activeProspects,
+    prospectFollowUpsDue,
     projects,
     activeProjects,
     tasks,
@@ -31,6 +33,35 @@ export default async function OwnerDashboardPage() {
     prisma.client.count({
       where: {
         workspaceId: owner.workspaceId,
+      },
+    }),
+    prisma.prospect.count({
+      where: {
+        workspaceId: owner.workspaceId,
+        status: {
+          in: [
+            ProspectStatus.TO_CONTACT,
+            ProspectStatus.CONTACTED,
+            ProspectStatus.ENGAGED,
+            ProspectStatus.QUALIFIED,
+          ],
+        },
+      },
+    }),
+    prisma.prospect.count({
+      where: {
+        workspaceId: owner.workspaceId,
+        status: {
+          in: [
+            ProspectStatus.TO_CONTACT,
+            ProspectStatus.CONTACTED,
+            ProspectStatus.ENGAGED,
+            ProspectStatus.QUALIFIED,
+          ],
+        },
+        nextFollowUpAt: {
+          lte: new Date(),
+        },
       },
     }),
     prisma.project.count({
@@ -101,8 +132,14 @@ export default async function OwnerDashboardPage() {
     {
       label: "Clients",
       value: clients,
-      detail: "Prospect and active client accounts",
+      detail: "Business workspaces",
       href: "/owner/clients",
+    },
+    {
+      label: "Active prospects",
+      value: activeProspects,
+      detail: `${prospectFollowUpsDue} follow-up${prospectFollowUpsDue === 1 ? "" : "s"} due`,
+      href: "/owner/prospects",
     },
     {
       label: "Active projects",
@@ -151,10 +188,10 @@ export default async function OwnerDashboardPage() {
 
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/owner/leads"
+              href="/owner/prospects/new"
               className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
             >
-              Review Leads
+              New Prospect
             </Link>
             <Link
               href="/owner/clients/new"
@@ -190,17 +227,22 @@ export default async function OwnerDashboardPage() {
               </Link>
             </div>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {[
                 {
-                  label: "New",
+                  label: "New website leads",
                   value: leadDashboard.newCount,
                   href: "/owner/leads?status=NEW",
                 },
                 {
-                  label: "Follow-ups due",
+                  label: "Lead follow-ups due",
                   value: leadDashboard.followUpsDue,
                   href: "/owner/leads?followUp=due",
+                },
+                {
+                  label: "Prospect follow-ups due",
+                  value: prospectFollowUpsDue,
+                  href: "/owner/prospects?followUp=due",
                 },
                 {
                   label: "Notification failures",
@@ -267,7 +309,7 @@ export default async function OwnerDashboardPage() {
           </section>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
           {cards.map((card) => (
             <Link
               key={card.label}
@@ -298,6 +340,10 @@ export default async function OwnerDashboardPage() {
             </h2>
             <div className="mt-6 grid gap-3">
               {[
+                {
+                  label: "Work outbound prospects",
+                  href: "/owner/prospects",
+                },
                 {
                   label: "Work the lead inbox",
                   href: "/owner/leads",

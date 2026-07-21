@@ -3,7 +3,7 @@
 Dark Labs Solutions is a Next.js application with two connected surfaces:
 
 - a public marketing site for Dark Labs services, packages, and client-approved work;
-- a private, owner-only Command Center for clients, projects, tasks, goals, notes, delivery records, and public case-study publishing.
+- a private, owner-only Command Center for outbound prospects, inbound leads, client service workstreams, projects, tasks, goals, notes, delivery records, and public case-study publishing.
 
 The application uses Next.js, React, Prisma, PostgreSQL, NextAuth with Google OAuth, Vercel, and Vercel Blob.
 
@@ -63,8 +63,10 @@ The Command Center is available at `http://localhost:3000/owner` after Google au
 | `NEXT_PUBLIC_DARK_LABS_CONTACT_EMAIL` | Recommended       | Public project-inquiry email address.                                                                               |
 | `NEXT_PUBLIC_DARK_LABS_PHONE_DISPLAY` | Recommended       | Public phone label or number.                                                                                       |
 | `NEXT_PUBLIC_DARK_LABS_PHONE_HREF`    | Recommended       | Public `tel:` link.                                                                                                 |
+| `NEXT_PUBLIC_DARK_LABS_FACEBOOK_URL`  | Recommended       | Public Facebook profile or business-page URL.                                                                       |
 
-Never commit production credentials. `.env.example` contains names and placeholders only.
+Never commit production credentials. `.env.example` contains safe public defaults
+and placeholders for private values only.
 
 ## Google OAuth configuration
 
@@ -116,12 +118,13 @@ match Production, and only then set Preview-scoped
 `ALLOW_PREVIEW_MIGRATIONS=true`. Leave the flag false if Preview is not intended
 to exercise database-backed features.
 
-The lead pipeline adds database-backed intake, rate limiting, notification state,
-and activity records, so this separation is a release requirement rather than an
-optional optimization. Configure Preview with its own `DATABASE_URL`, test
-notification recipient, and Resend credentials. Production must have separate
-values scoped only to the Production environment. Never point a branch-specific
-Preview variable at the production database.
+The lead pipeline and Command Center CRM add database-backed intake, prospect,
+client-service, rate-limiting, notification, and activity records, so this
+separation is a release requirement rather than an optional optimization.
+Configure Preview with its own `DATABASE_URL`, test notification recipient, and
+Resend credentials. Production must have separate values scoped only to the
+Production environment. Never point a branch-specific Preview variable at the
+production database.
 
 The notification retry route is scheduled every five minutes in `vercel.json`.
 That schedule requires a Vercel plan that permits sub-daily cron execution. If
@@ -145,8 +148,9 @@ The server-side upload path accepts JPG, PNG, and WebP images with up to 3 MB of
 
 The Command Center is owner-only and workspace-scoped. Its primary modules are:
 
-- **Leads** — persisted website inquiries, qualification, follow-up, conversion, and notification health.
-- **Clients** — qualified prospect and active client accounts, contacts, and client metadata.
+- **Clients** — real business accounts, contacts, Website/SEO/Web Analytics workstreams, and linked delivery projects.
+- **Prospects** — owner-created outbound opportunities, outreach history, follow-up, and explicit promotion to an active client.
+- **Leads** — persisted inbound website inquiries, qualification, follow-up, conversion, and notification health.
 - **Projects** — delivery status, budgets, milestones, deliverables, updates, and proof assets.
 - **Tasks** — execution queue and project/client-linked work.
 - **Goals** — business and personal operating goals.
@@ -257,7 +261,9 @@ Before production launch, verify:
 - the owner email is listed in `OWNER_EMAILS`;
 - the public Blob store is connected;
 - client logos and proof images survive a fresh deployment;
-- `/owner`, `/owner/projects`, `/services`, and `/work` load without runtime errors;
+- `/owner`, `/owner/clients`, `/owner/prospects`, `/owner/leads`, `/owner/projects`, `/services`, and `/work` load without runtime errors;
+- a prospect can be recorded, followed up, and promoted exactly once to an active client;
+- each client can configure one Website, SEO, and Web Analytics workstream, and its linked projects open from the client workspace;
 - an unpublished project remains absent from public pages;
 - a published project exposes only approved copy, updates, and media;
 - public contact email and phone values are no longer using defaults;

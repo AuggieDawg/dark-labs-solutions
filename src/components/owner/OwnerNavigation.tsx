@@ -11,8 +11,9 @@ const OWNER_NAV_GROUPS = [
   {
     label: "Sales",
     items: [
-      { label: "Leads", href: "/owner/leads" },
       { label: "Clients", href: "/owner/clients" },
+      { label: "Prospects", href: "/owner/prospects" },
+      { label: "Leads", href: "/owner/leads" },
     ],
   },
   {

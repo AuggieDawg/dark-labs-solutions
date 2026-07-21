@@ -272,8 +272,7 @@ export async function convertLeadToClientAction(
           workspaceId: owner.workspaceId,
           name: lead.businessName,
           slug,
-          status: ClientStatus.LEAD,
-          company: lead.businessName,
+          status: ClientStatus.ACTIVE,
           website: lead.websiteUrl,
           source: lead.referralSource || "Website inquiry",
           summary: lead.desiredOutcome

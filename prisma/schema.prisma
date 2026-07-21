@@ -34,6 +34,41 @@ enum ClientStatus {
   ARCHIVED
 }
 
+enum ProspectStatus {
+  TO_CONTACT
+  CONTACTED
+  ENGAGED
+  QUALIFIED
+  NOT_INTERESTED
+  DO_NOT_CONTACT
+  CONVERTED
+  ARCHIVED
+}
+
+enum ProspectChannel {
+  EMAIL
+  PHONE
+  LINKEDIN
+  FACEBOOK
+  IN_PERSON
+  REFERRAL
+  OTHER
+}
+
+enum ClientServiceType {
+  WEBSITE
+  SEO
+  WEB_ANALYTICS
+}
+
+enum ClientServiceStatus {
+  PLANNED
+  ONBOARDING
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
 enum LeadStatus {
   NEW
   CONTACTED
@@ -228,6 +263,8 @@ model Workspace {
   leads             Lead[]
   leadNotifications LeadNotification[]
   leadRateLimits    LeadRateLimit[]
+  prospects         Prospect[]
+  clientServices    ClientService[]
 }
 
 model WorkspaceMembership {
@@ -252,7 +289,7 @@ model Client {
   workspaceId String
   name        String
   slug        String?
-  status      ClientStatus @default(LEAD)
+  status      ClientStatus @default(ACTIVE)
 
   company       String?
   website       String?
@@ -271,10 +308,77 @@ model Client {
   tasks     Task[]
   notes     Note[]
   leads     Lead[]
+  prospects Prospect[]
+  services  ClientService[]
 
   @@unique([workspaceId, slug])
   @@index([workspaceId, status])
   @@index([workspaceId, name])
+}
+
+model Prospect {
+  id          String         @id @default(cuid())
+  workspaceId String
+  clientId    String?
+  status      ProspectStatus @default(TO_CONTACT)
+
+  businessName    String
+  contactName     String?
+  email           String?
+  emailNormalized String?
+  phone           String?
+  websiteUrl      String?
+  industry        String?
+  location        String?
+  source          String?
+  valueHypothesis String?
+
+  lastContactChannel ProspectChannel?
+  firstContactedAt   DateTime?
+  lastContactedAt    DateTime?
+  nextFollowUpAt     DateTime?
+  convertedAt        DateTime?
+  closedAt           DateTime?
+  internalNotes      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, status, updatedAt])
+  @@index([workspaceId, nextFollowUpAt])
+  @@index([workspaceId, businessName])
+  @@index([workspaceId, emailNormalized])
+  @@index([clientId])
+}
+
+model ClientService {
+  id          String              @id @default(cuid())
+  workspaceId String
+  clientId    String
+  type        ClientServiceType
+  status      ClientServiceStatus @default(PLANNED)
+
+  summary       String?
+  primaryUrl    String?
+  internalNotes String?
+  startedAt     DateTime?
+  nextReviewAt  DateTime?
+  endedAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projects  Project[]
+
+  @@unique([workspaceId, clientId, type])
+  @@index([workspaceId, status])
+  @@index([workspaceId, type])
+  @@index([clientId])
 }
 
 model Lead {
@@ -396,9 +500,10 @@ model ClientContact {
 }
 
 model Project {
-  id          String  @id @default(cuid())
-  workspaceId String
-  clientId    String?
+  id              String  @id @default(cuid())
+  workspaceId     String
+  clientId        String?
+  clientServiceId String?
 
   name       String
   slug       String?
@@ -443,8 +548,9 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  client        Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientService ClientService? @relation(fields: [clientServiceId], references: [id], onDelete: SetNull)
 
   milestones        ProjectMilestone[]
   deliverables      ProjectDeliverable[]
@@ -460,6 +566,7 @@ model Project {
   @@index([workspaceId, showcaseEnabled])
   @@index([workspaceId, showcaseService])
   @@index([clientId])
+  @@index([clientServiceId])
 }
 
 model ProjectMilestone {

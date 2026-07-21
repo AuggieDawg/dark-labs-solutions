@@ -136,9 +136,10 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             </h2>
             <p className="mt-3 text-sm leading-6 text-white/60">
               The structured form is the best way to preserve project context,
-              but phone and email remain available when they are a better fit.
+              but phone, email, and Facebook remain available when they are a
+              better fit.
             </p>
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-col xl:flex-row">
               <a
                 href={APP_CONFIG.phoneHref}
                 className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -149,7 +150,16 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
                 href={`mailto:${APP_CONFIG.contactEmail}`}
                 className="inline-flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.09] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
-                Email Dark Labs
+                {APP_CONFIG.contactEmail}
+              </a>
+              <a
+                href={APP_CONFIG.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.09] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                Facebook
+                <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </div>
           </section>

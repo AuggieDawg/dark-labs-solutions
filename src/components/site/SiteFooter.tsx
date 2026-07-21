@@ -16,7 +16,7 @@ export function SiteFooter() {
           </p>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-3">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/35">
               Site
@@ -45,6 +45,32 @@ export function SiteFooter() {
               <Link href="/sign-in" className="hover:text-white">
                 Sign In
               </Link>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/35">
+              Contact
+            </p>
+            <div className="mt-4 grid gap-3 text-sm text-white/45">
+              <a href={APP_CONFIG.phoneHref} className="hover:text-white">
+                {APP_CONFIG.phoneDisplay}
+              </a>
+              <a
+                href={`mailto:${APP_CONFIG.contactEmail}`}
+                className="hover:text-white"
+              >
+                {APP_CONFIG.contactEmail}
+              </a>
+              <a
+                href={APP_CONFIG.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white"
+              >
+                Facebook
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
             </div>
           </div>
 
