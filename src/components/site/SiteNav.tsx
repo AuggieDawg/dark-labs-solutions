@@ -28,7 +28,10 @@ export function SiteNav() {
           />
         </Link>
 
-        <nav className="pointer-events-auto hidden items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 shadow-2xl shadow-black/35 backdrop-blur-xl md:flex">
+        <nav
+          aria-label="Primary navigation"
+          className="pointer-events-auto hidden items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 shadow-2xl shadow-black/35 backdrop-blur-xl md:flex"
+        >
           {APP_CONFIG.publicNav.slice(1).map((item) => {
             const active = pathname === item.href;
 
@@ -36,6 +39,7 @@ export function SiteNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={[
                   "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition",
                   active
@@ -76,7 +80,10 @@ export function SiteNav() {
       </div>
 
       <div className="pointer-events-auto mx-auto flex max-w-7xl px-4 md:hidden">
-        <nav className="flex gap-2 overflow-x-auto rounded-full border border-white/10 bg-black/25 px-2 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50 shadow-2xl shadow-black/40 backdrop-blur-xl">
+        <nav
+          aria-label="Mobile navigation"
+          className="flex gap-2 overflow-x-auto rounded-full border border-white/10 bg-black/25 px-2 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50 shadow-2xl shadow-black/40 backdrop-blur-xl"
+        >
           {APP_CONFIG.publicNav.slice(1).map((item) => {
             const active = pathname === item.href;
 
@@ -84,6 +91,7 @@ export function SiteNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={[
                   "shrink-0 rounded-full px-3 py-2",
                   active ? "bg-white text-black" : "hover:text-white",

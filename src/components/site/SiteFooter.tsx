@@ -16,7 +16,7 @@ export function SiteFooter() {
           </p>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/35">
               Site
@@ -44,6 +44,20 @@ export function SiteFooter() {
               </Link>
               <Link href="/sign-in" className="hover:text-white">
                 Sign In
+              </Link>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/35">
+              Legal
+            </p>
+            <div className="mt-4 grid gap-3 text-sm text-white/45">
+              <Link href="/privacy" className="hover:text-white">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-white">
+                Terms
               </Link>
             </div>
           </div>

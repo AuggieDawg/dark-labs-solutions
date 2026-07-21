@@ -34,6 +34,43 @@ enum ClientStatus {
   ARCHIVED
 }
 
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  DISQUALIFIED
+  CONVERTED
+  SPAM
+  ARCHIVED
+}
+
+enum LeadTimeline {
+  IMMEDIATELY
+  ONE_TO_THREE_MONTHS
+  THREE_TO_SIX_MONTHS
+  EXPLORING
+}
+
+enum LeadBudgetRange {
+  UNDER_5000
+  FROM_5000_TO_10000
+  FROM_10000_TO_20000
+  FROM_20000_TO_30000
+  ABOVE_30000
+  NOT_SURE
+}
+
+enum LeadNotificationKind {
+  OWNER_NEW_LEAD
+}
+
+enum LeadNotificationStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+}
+
 enum ProjectStatus {
   DISCOVERY
   ACTIVE
@@ -180,14 +217,17 @@ model Workspace {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  memberships  WorkspaceMembership[]
-  clients      Client[]
-  projects     Project[]
-  tasks        Task[]
-  taskLinks    TaskLink[]
-  goals        Goal[]
-  notes        Note[]
-  activityLogs ActivityLog[]
+  memberships       WorkspaceMembership[]
+  clients           Client[]
+  projects          Project[]
+  tasks             Task[]
+  taskLinks         TaskLink[]
+  goals             Goal[]
+  notes             Note[]
+  activityLogs      ActivityLog[]
+  leads             Lead[]
+  leadNotifications LeadNotification[]
+  leadRateLimits    LeadRateLimit[]
 }
 
 model WorkspaceMembership {
@@ -230,10 +270,109 @@ model Client {
   projects  Project[]
   tasks     Task[]
   notes     Note[]
+  leads     Lead[]
 
   @@unique([workspaceId, slug])
   @@index([workspaceId, status])
   @@index([workspaceId, name])
+}
+
+model Lead {
+  id             String     @id @default(cuid())
+  workspaceId    String
+  clientId       String?
+  reference      String     @unique
+  idempotencyKey String
+  status         LeadStatus @default(NEW)
+
+  firstName       String
+  lastName        String
+  email           String
+  emailNormalized String
+  phone           String?
+  businessName    String
+  websiteUrl      String?
+
+  engagementSlug     String?
+  businessConstraint String
+  desiredOutcome     String?
+  timeline           LeadTimeline?
+  budgetRange        LeadBudgetRange?
+  referralSource     String?
+
+  sourcePath  String?
+  landingPath String?
+  referrerUrl String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmTerm     String?
+  utmContent  String?
+
+  privacyAcknowledgedAt DateTime
+  privacyNoticeVersion  String
+
+  firstContactedAt DateTime?
+  nextFollowUpAt   DateTime?
+  convertedAt      DateTime?
+  closedAt         DateTime?
+  internalNotes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace     Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  client        Client?            @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  notifications LeadNotification[]
+
+  @@unique([workspaceId, idempotencyKey])
+  @@index([workspaceId, status, createdAt])
+  @@index([workspaceId, nextFollowUpAt])
+  @@index([workspaceId, emailNormalized])
+  @@index([clientId])
+}
+
+model LeadNotification {
+  id          String                 @id @default(cuid())
+  workspaceId String
+  leadId      String
+  kind        LeadNotificationKind   @default(OWNER_NEW_LEAD)
+  status      LeadNotificationStatus @default(PENDING)
+
+  provider          String?
+  recipient         String
+  providerMessageId String?
+  attemptCount      Int       @default(0)
+  lastAttemptAt     DateTime?
+  nextAttemptAt     DateTime?
+  sentAt            DateTime?
+  lastError         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  lead      Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId, kind])
+  @@index([workspaceId, status, nextAttemptAt])
+  @@index([leadId])
+}
+
+model LeadRateLimit {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  keyHash         String
+  windowStartedAt DateTime
+  count           Int      @default(1)
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, keyHash, windowStartedAt])
+  @@index([expiresAt])
 }
 
 model ClientContact {

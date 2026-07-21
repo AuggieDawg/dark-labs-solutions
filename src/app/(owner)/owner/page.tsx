@@ -5,7 +5,8 @@ import Link from "next/link";
 import { ProjectStatus, TaskStatus } from "@/generated/prisma";
 import { prisma } from "@/lib/db/prisma";
 import { requireOwner } from "@/lib/auth/require";
-import { formatTimestamp } from "@/lib/utils/format";
+import { formatEnumLabel, formatTimestamp } from "@/lib/utils/format";
+import { getLeadDashboardForWorkspace } from "@/server/queries/leads";
 
 export const metadata = {
   title: "Command Center",
@@ -15,6 +16,7 @@ export default async function OwnerDashboardPage() {
   const owner = await requireOwner();
 
   const [
+    leadDashboard,
     clients,
     projects,
     activeProjects,
@@ -25,6 +27,7 @@ export default async function OwnerDashboardPage() {
     publishedWork,
     recentActivity,
   ] = await Promise.all([
+    getLeadDashboardForWorkspace(owner.workspaceId),
     prisma.client.count({
       where: {
         workspaceId: owner.workspaceId,
@@ -98,7 +101,7 @@ export default async function OwnerDashboardPage() {
     {
       label: "Clients",
       value: clients,
-      detail: "Leads and active client records",
+      detail: "Prospect and active client accounts",
       href: "/owner/clients",
     },
     {
@@ -139,13 +142,20 @@ export default async function OwnerDashboardPage() {
               Dark Labs Command Center
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-6 text-white/55">
-              Operate client relationships, delivery, execution, business goals,
-              internal knowledge, and public proof from one workspace. Every
-              record is scoped to the authenticated Dark Labs workspace.
+              Operate sales intake, client relationships, delivery, execution,
+              business goals, internal knowledge, and public proof from one
+              workspace. Every record is scoped to the authenticated Dark Labs
+              workspace.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
+            <Link
+              href="/owner/leads"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
+            >
+              Review Leads
+            </Link>
             <Link
               href="/owner/clients/new"
               className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
@@ -161,7 +171,103 @@ export default async function OwnerDashboardPage() {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="mt-10 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+          <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-sky-300/[0.09] to-white/[0.02] p-6">
+            <div className="flex items-start justify-between gap-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
+                  Sales inbox
+                </p>
+                <h2 className="mt-4 text-2xl font-semibold tracking-[-0.035em]">
+                  Act on the next conversation.
+                </h2>
+              </div>
+              <Link
+                href="/owner/leads"
+                className="text-sm font-semibold text-white/55 transition hover:text-white"
+              >
+                All leads →
+              </Link>
+            </div>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              {[
+                {
+                  label: "New",
+                  value: leadDashboard.newCount,
+                  href: "/owner/leads?status=NEW",
+                },
+                {
+                  label: "Follow-ups due",
+                  value: leadDashboard.followUpsDue,
+                  href: "/owner/leads?followUp=due",
+                },
+                {
+                  label: "Notification failures",
+                  value: leadDashboard.failedNotifications,
+                  href: "/owner/leads?notification=failed",
+                },
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="rounded-2xl border border-white/10 bg-black/25 p-4 transition hover:bg-white/[0.07]"
+                >
+                  <p className="text-xs leading-5 text-white/40">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 text-3xl font-semibold">{item.value}</p>
+                </Link>
+              ))}
+            </div>
+
+            <p className="mt-5 text-xs leading-5 text-white/32">
+              {leadDashboard.total} total persisted lead
+              {leadDashboard.total === 1 ? "" : "s"}. Email is a notification;
+              the Command Center remains the source of truth.
+            </p>
+          </section>
+
+          <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/35">
+              Recent leads
+            </p>
+            <div className="mt-5 divide-y divide-white/10">
+              {leadDashboard.recent.length === 0 ? (
+                <p className="py-4 text-sm leading-6 text-white/45">
+                  Persisted website inquiries will appear here.
+                </p>
+              ) : (
+                leadDashboard.recent.map((lead) => (
+                  <Link
+                    key={lead.id}
+                    href={`/owner/leads/${lead.id}`}
+                    className="grid gap-2 py-3 transition hover:bg-white/[0.025] sm:grid-cols-[1fr_auto] sm:items-center"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-white/72">
+                        {lead.firstName} {lead.lastName}
+                      </p>
+                      <p className="mt-1 text-xs text-white/38">
+                        {lead.businessName} · {lead.reference}
+                      </p>
+                    </div>
+                    <div className="sm:text-right">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
+                        {formatEnumLabel(lead.status)}
+                      </p>
+                      <p className="mt-1 text-xs text-white/28">
+                        {formatTimestamp(lead.createdAt)}
+                      </p>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </section>
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {cards.map((card) => (
             <Link
               key={card.label}
@@ -193,7 +299,11 @@ export default async function OwnerDashboardPage() {
             <div className="mt-6 grid gap-3">
               {[
                 {
-                  label: "Review client pipeline",
+                  label: "Work the lead inbox",
+                  href: "/owner/leads",
+                },
+                {
+                  label: "Review client accounts",
                   href: "/owner/clients",
                 },
                 {
@@ -237,8 +347,8 @@ export default async function OwnerDashboardPage() {
               {recentActivity.length === 0 ? (
                 <div className="py-6">
                   <p className="text-sm text-white/45">
-                    Activity will appear as clients, projects, tasks, and public
-                    proof are created or updated.
+                    Activity will appear as leads, clients, projects, tasks, and
+                    public proof are created or updated.
                   </p>
                 </div>
               ) : (
