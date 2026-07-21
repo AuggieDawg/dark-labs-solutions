@@ -46,6 +46,21 @@ export default async function OwnerLayout({
           ))}
         </nav>
 
+        <div className="mt-8 grid gap-2 border-t border-white/10 pt-6 text-sm">
+          <Link
+            href="/work"
+            className="rounded-xl px-4 py-3 text-white/45 transition hover:bg-white/[0.06] hover:text-white"
+          >
+            View Public Work ↗
+          </Link>
+          <Link
+            href="/"
+            className="rounded-xl px-4 py-3 text-white/45 transition hover:bg-white/[0.06] hover:text-white"
+          >
+            View Public Site ↗
+          </Link>
+        </div>
+
         <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
           <p className="text-xs text-white/40">Signed in as</p>
           <p className="mt-1 truncate text-sm font-medium text-white/80">
@@ -59,15 +74,35 @@ export default async function OwnerLayout({
       </aside>
 
       <main className="min-h-screen lg:pl-72">
-        <div className="border-b border-white/10 bg-black/50 px-5 py-4 backdrop-blur-xl lg:hidden">
-          <div className="flex items-center justify-between">
+        <div className="sticky top-0 z-40 border-b border-white/10 bg-black/80 backdrop-blur-xl lg:hidden">
+          <div className="flex items-center justify-between px-5 py-4">
             <Link href="/owner" className="font-semibold">
               {APP_CONFIG.ownerAppName}
             </Link>
-            <Link href="/" className="text-sm text-white/60">
-              Home
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/work" className="text-sm text-white/60">
+                Work
+              </Link>
+              <Link href="/" className="text-sm text-white/60">
+                Site
+              </Link>
+            </div>
           </div>
+
+          <nav
+            aria-label="Command Center navigation"
+            className="flex gap-2 overflow-x-auto px-5 pb-4"
+          >
+            {ownerLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="shrink-0 rounded-full border border-white/10 bg-white/[0.045] px-4 py-2 text-xs font-semibold text-white/60 transition hover:bg-white/[0.09] hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
         {children}

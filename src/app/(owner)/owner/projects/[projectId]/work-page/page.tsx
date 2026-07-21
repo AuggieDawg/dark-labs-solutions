@@ -39,6 +39,17 @@ export default async function ProjectWorkPage({
           company: true,
         },
       },
+      beforeAfterAssets: {
+        where: {
+          publicEnabled: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+        },
+      },
       updates: {
         orderBy: {
           createdAt: "desc",
@@ -66,20 +77,26 @@ export default async function ProjectWorkPage({
       <div className="mt-8 flex flex-col justify-between gap-6 xl:flex-row xl:items-end">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/35">
-            Public proof
+            Public case study
           </p>
           <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] md:text-5xl">
             Work page publishing
           </h1>
           <p className="mt-4 max-w-3xl text-sm leading-6 text-white/55">
-            Build the complete project privately, then choose the exact
-            case-study copy and project updates that Dark Labs can publish.
-            Internal notes, budgets, tasks, client-only material, and project
-            images never render on the public Work page.
+            Prepare the public project narrative, select approved implementation
+            updates, and publish only the media explicitly marked public in the
+            project proof library. Budgets, tasks, internal notes, client-only
+            fields, and unapproved assets never render on the public Work page.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
+          <Link
+            href={`/owner/projects/${project.id}/before-after`}
+            className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] px-5 text-sm font-semibold text-white hover:bg-white/[0.09]"
+          >
+            Manage Public Media ({project.beforeAfterAssets.length})
+          </Link>
           <Link
             href={publicPreviewHref}
             className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black hover:bg-white/90"
@@ -99,8 +116,8 @@ export default async function ProjectWorkPage({
             </p>
             <p className="mt-1 text-xs text-white/40">
               {project.workPublishedAt
-                ? `Published ${formatDate(project.workPublishedAt)}`
-                : "Enable publishing only after the client-approved public content is ready."}
+                ? `First published ${formatDate(project.workPublishedAt)}`
+                : "Publish only after the public narrative and media have been reviewed."}
             </p>
           </div>
           <span
@@ -121,10 +138,12 @@ export default async function ProjectWorkPage({
       >
         <div className="flex flex-col justify-between gap-5 border-b border-white/10 pb-6 md:flex-row md:items-center">
           <div>
-            <h2 className="text-xl font-semibold">Public case study</h2>
+            <h2 className="text-xl font-semibold">Public narrative</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-white/45">
-              Only the fields in this section are used as project copy on the
-              public Work page.
+              These fields are intentionally separate from owner and
+              client-facing project notes. Write for a prospective buyer who
+              needs to understand the problem, the system, and the credible
+              outcome.
             </p>
           </div>
 
@@ -204,19 +223,19 @@ export default async function ProjectWorkPage({
           <textarea
             name="workSummary"
             defaultValue={project.workSummary ?? ""}
-            placeholder="The concise result a prospective client should understand first."
+            placeholder="The concise business result or transformation a prospective client should understand first."
             className="min-h-24 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
           />
         </label>
 
         <label className="mt-5 grid gap-2">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
-            Case-study description
+            Engagement description
           </span>
           <textarea
             name="workDescription"
             defaultValue={project.workDescription ?? ""}
-            placeholder="Describe the engagement and what Dark Labs was responsible for."
+            placeholder="Describe the business context, engagement scope, and what Dark Labs was accountable for."
             className="min-h-32 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
           />
         </label>
@@ -227,19 +246,22 @@ export default async function ProjectWorkPage({
               name: "workChallenge",
               label: "Challenge",
               value: project.workChallenge,
-              placeholder: "What was not working before?",
+              placeholder:
+                "What business or customer-journey constraint existed?",
             },
             {
               name: "workSolution",
-              label: "Solution",
+              label: "System",
               value: project.workSolution,
-              placeholder: "What did Dark Labs build or integrate?",
+              placeholder:
+                "What did Dark Labs design, build, connect, or change?",
             },
             {
               name: "workOutcome",
               label: "Outcome",
               value: project.workOutcome,
-              placeholder: "What changed after launch?",
+              placeholder:
+                "What verifiable result or operational improvement followed?",
             },
           ].map((field) => (
             <label key={field.name} className="grid gap-2">
@@ -266,69 +288,66 @@ export default async function ProjectWorkPage({
         </div>
       </form>
 
-      <div className="mt-6">
-        <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-6">
-          <div>
-            <h2 className="text-xl font-semibold">
-              Public updates and comments
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-white/45">
-              Select individual project updates that help tell the public story.
-              Their existing owner/client visibility does not make them public.
+      <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.035] p-6">
+        <div>
+          <h2 className="text-xl font-semibold">Public implementation notes</h2>
+          <p className="mt-2 text-sm leading-6 text-white/45">
+            Select only the updates that improve the public story. Existing
+            owner or client visibility never makes an update public
+            automatically.
+          </p>
+        </div>
+
+        <div className="mt-6 space-y-3">
+          {project.updates.length === 0 ? (
+            <p className="text-sm text-white/40">
+              Add project updates from the project overview first.
             </p>
-          </div>
+          ) : (
+            project.updates.map((update) => {
+              const toggleUpdate = toggleProjectUpdateWorkPageAction.bind(
+                null,
+                project.id,
+                update.id,
+              );
 
-          <div className="mt-6 space-y-3">
-            {project.updates.length === 0 ? (
-              <p className="text-sm text-white/40">
-                Add project updates from the project overview first.
-              </p>
-            ) : (
-              project.updates.map((update) => {
-                const toggleUpdate = toggleProjectUpdateWorkPageAction.bind(
-                  null,
-                  project.id,
-                  update.id,
-                );
-
-                return (
-                  <article
-                    key={update.id}
-                    className="rounded-2xl border border-white/10 bg-black/35 p-4"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-sm font-semibold">
-                          {update.title || "Project update"}
-                        </p>
-                        <p className="mt-2 whitespace-pre-line text-sm leading-6 text-white/50">
-                          {update.body}
-                        </p>
-                        <p className="mt-3 text-xs text-white/30">
-                          {formatEnumLabel(update.visibility)} ·{" "}
-                          {formatDate(update.createdAt)}
-                        </p>
-                      </div>
-                      <form action={toggleUpdate}>
-                        <button
-                          type="submit"
-                          className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold ${
-                            update.showOnWorkPage
-                              ? "bg-emerald-400/15 text-emerald-200"
-                              : "border border-white/10 text-white/55 hover:text-white"
-                          }`}
-                        >
-                          {update.showOnWorkPage ? "Public" : "Make Public"}
-                        </button>
-                      </form>
+              return (
+                <article
+                  key={update.id}
+                  className="rounded-2xl border border-white/10 bg-black/35 p-4"
+                >
+                  <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
+                    <div>
+                      <p className="text-sm font-semibold">
+                        {update.title || "Project update"}
+                      </p>
+                      <p className="mt-2 whitespace-pre-line text-sm leading-6 text-white/50">
+                        {update.body}
+                      </p>
+                      <p className="mt-3 text-xs text-white/30">
+                        {formatEnumLabel(update.visibility)} ·{" "}
+                        {formatDate(update.createdAt)}
+                      </p>
                     </div>
-                  </article>
-                );
-              })
-            )}
-          </div>
-        </section>
-      </div>
+                    <form action={toggleUpdate}>
+                      <button
+                        type="submit"
+                        className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold ${
+                          update.showOnWorkPage
+                            ? "bg-emerald-400/15 text-emerald-200"
+                            : "border border-white/10 text-white/55 hover:text-white"
+                        }`}
+                      >
+                        {update.showOnWorkPage ? "Public" : "Make Public"}
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              );
+            })
+          )}
+        </div>
+      </section>
     </section>
   );
 }
