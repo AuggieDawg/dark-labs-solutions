@@ -307,7 +307,7 @@ export default async function ServicesPage() {
                 </p>
 
                 <Link
-                  href={`/contact?engagement=${encodeURIComponent(engagement.name)}`}
+                  href={`/contact?engagement=${encodeURIComponent(engagement.slug)}`}
                   className="mt-7 inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:bg-white/90"
                 >
                   Discuss {engagement.name}

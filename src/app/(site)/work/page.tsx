@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { prisma } from "@/lib/db/prisma";
+import { getPrimaryWorkspaceSlug } from "@/lib/env/server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,12 +17,16 @@ async function loadPublishedProjects() {
     const projects = await prisma.project.findMany({
       where: {
         workPageEnabled: true,
+        workTitle: {
+          not: null,
+        },
+        workspace: {
+          slug: getPrimaryWorkspaceSlug(),
+        },
       },
       orderBy: [{ workSortOrder: "asc" }, { workPublishedAt: "desc" }],
       select: {
         id: true,
-        slug: true,
-        name: true,
         workTitle: true,
         workClientLabel: true,
         workSummary: true,
@@ -61,8 +66,13 @@ async function loadPublishedProjects() {
       },
     });
 
+    const publishableProjects = projects.filter(
+      (project): project is typeof project & { workTitle: string } =>
+        Boolean(project.workTitle?.trim()),
+    );
+
     return {
-      projects,
+      projects: publishableProjects,
       unavailable: false,
     };
   } catch (error) {
@@ -133,7 +143,6 @@ export default async function WorkPage() {
       ) : (
         <div className="border-t border-white/10">
           {projects.map((project, projectIndex) => {
-            const projectId = `project-${project.slug || project.id}`;
             const storySections = [
               { label: "Challenge", body: project.workChallenge },
               { label: "System", body: project.workSolution },
@@ -142,7 +151,6 @@ export default async function WorkPage() {
 
             return (
               <article
-                id={projectId}
                 key={project.id}
                 className="scroll-mt-24 border-b border-white/10 px-6 py-24 md:py-32"
               >
@@ -161,7 +169,7 @@ export default async function WorkPage() {
 
                     <div>
                       <h2 className="max-w-4xl text-4xl font-semibold tracking-[-0.06em] md:text-6xl">
-                        {project.workTitle || project.name}
+                        {project.workTitle}
                       </h2>
                       {project.workSummary ? (
                         <p className="mt-6 max-w-3xl text-lg leading-8 text-white/65 md:text-xl">
@@ -218,7 +226,7 @@ export default async function WorkPage() {
                                 <div className="relative aspect-[16/10] bg-black">
                                   <Image
                                     src={asset.beforeImageUrl}
-                                    alt={`${asset.label || project.name} before`}
+                                    alt={`${asset.label || project.workTitle} before`}
                                     fill
                                     sizes="(min-width: 1024px) 50vw, 100vw"
                                     className="object-cover"
@@ -232,7 +240,7 @@ export default async function WorkPage() {
                                 <div className="relative aspect-[16/10] bg-black">
                                   <Image
                                     src={asset.afterImageUrl}
-                                    alt={`${asset.label || project.name} after`}
+                                    alt={`${asset.label || project.workTitle} after`}
                                     fill
                                     sizes="(min-width: 1024px) 50vw, 100vw"
                                     className="object-cover"

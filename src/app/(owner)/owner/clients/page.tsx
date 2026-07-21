@@ -49,8 +49,8 @@ export default async function OwnerClientsPage({
             Clients
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-6 text-white/55">
-            Track leads, active clients, contacts, projects, internal notes, and
-            the business relationships behind Dark Labs.
+            Open a business workspace to manage its contacts, service
+            workstreams, projects, and delivery history.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default async function OwnerClientsPage({
         <input
           name="q"
           defaultValue={q}
-          placeholder="Search clients, companies, industries, sources..."
+          placeholder="Search business names, industries, and sources..."
           className="h-12 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25"
         />
 
@@ -115,14 +115,20 @@ export default async function OwnerClientsPage({
               <Link
                 key={client.id}
                 href={`/owner/clients/${client.id}`}
-                className="grid gap-4 p-5 transition hover:bg-white/[0.035] lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]"
+                className="grid gap-4 p-5 transition hover:bg-white/[0.035] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white/70 lg:grid-cols-[1.2fr_0.8fr_1fr_0.8fr]"
               >
                 <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+                    Business
+                  </p>
                   <p className="text-lg font-semibold text-white">
                     {client.name}
                   </p>
                   <p className="mt-1 text-sm text-white/45">
-                    {client.company || client.industry || "No company details"}
+                    {client.industry ||
+                      client.website ||
+                      client.company ||
+                      "Business details not added"}
                   </p>
                 </div>
 
@@ -140,8 +146,8 @@ export default async function OwnerClientsPage({
                     Related
                   </p>
                   <p className="mt-2 text-sm text-white/70">
-                    {client._count.projects} projects · {client._count.contacts}{" "}
-                    contacts
+                    {client._count.projects} projects · {client._count.services}{" "}
+                    workstreams · {client._count.contacts} contacts
                   </p>
                 </div>
 

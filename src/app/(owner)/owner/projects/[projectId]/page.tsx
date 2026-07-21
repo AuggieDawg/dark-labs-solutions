@@ -11,6 +11,7 @@ import {
   Visibility,
 } from "@/generated/prisma";
 
+import { OwnerFormSubmitButton } from "@/components/owner/OwnerFormSubmitButton";
 import { requireOwner } from "@/lib/auth/require";
 import {
   formatCurrencyFromCents,
@@ -28,6 +29,7 @@ import {
   getClientsForProjectSelect,
   getProjectDetailForWorkspace,
 } from "@/server/queries/projects";
+import { ClientProjectAssignmentFields } from "../ClientProjectAssignmentFields";
 
 export const dynamic = "force-dynamic";
 
@@ -74,12 +76,22 @@ export default async function ProjectDetailPage({
   return (
     <section className="px-5 py-8 lg:px-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href="/owner/projects"
-          className="text-sm text-white/45 hover:text-white"
-        >
-          ← Back to projects
-        </Link>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-white/45">
+          <Link href="/owner/projects" className="hover:text-white">
+            ← Back to projects
+          </Link>
+          {project.client ? (
+            <>
+              <span aria-hidden>/</span>
+              <Link
+                href={`/owner/clients/${project.client.id}`}
+                className="hover:text-white"
+              >
+                {project.client.name}
+              </Link>
+            </>
+          ) : null}
+        </div>
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/owner/projects/${project.id}/work-page`}
@@ -101,6 +113,11 @@ export default async function ProjectDetailPage({
           <p className="mt-4 max-w-2xl text-sm leading-6 text-white/55">
             {project.summary || "No project summary has been written yet."}
           </p>
+          {project.clientService ? (
+            <span className="mt-4 inline-flex rounded-full border border-sky-200/20 bg-sky-200/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sky-100">
+              {formatEnumLabel(project.clientService.type)} workstream
+            </span>
+          ) : null}
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 xl:w-[520px]">
@@ -191,24 +208,11 @@ export default async function ProjectDetailPage({
               />
             </label>
 
-            <label className="grid gap-2">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
-                Client
-              </span>
-              <select
-                name="clientId"
-                defaultValue={project.client?.id ?? ""}
-                className="h-12 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none focus:border-white/25"
-              >
-                <option value="">Internal / no client</option>
-                {clients.map((client) => (
-                  <option key={client.id} value={client.id}>
-                    {client.name}
-                    {client.company ? ` — ${client.company}` : ""}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <ClientProjectAssignmentFields
+              clients={clients}
+              initialClientId={project.client?.id ?? ""}
+              initialClientServiceId={project.clientService?.id ?? ""}
+            />
 
             <label className="grid gap-2">
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
@@ -461,12 +465,12 @@ export default async function ProjectDetailPage({
           </div>
 
           <div className="mt-6 flex justify-end">
-            <button
-              type="submit"
+            <OwnerFormSubmitButton
+              pendingLabel="Saving project..."
               className="h-12 rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
             >
-              Save Changes
-            </button>
+              Save changes
+            </OwnerFormSubmitButton>
           </div>
         </form>
 

@@ -51,7 +51,16 @@ export async function listClientsForWorkspace({
       _count: {
         select: {
           contacts: true,
-          projects: true,
+          projects: {
+            where: {
+              workspaceId,
+            },
+          },
+          services: {
+            where: {
+              workspaceId,
+            },
+          },
           tasks: true,
           notes: true,
         },
@@ -73,9 +82,28 @@ export async function getClientDetailForWorkspace(
       contacts: {
         orderBy: [{ isPrimary: "desc" }, { createdAt: "desc" }],
       },
+      services: {
+        where: {
+          workspaceId,
+        },
+        orderBy: [{ type: "asc" }],
+        include: {
+          _count: {
+            select: {
+              projects: {
+                where: {
+                  workspaceId,
+                },
+              },
+            },
+          },
+        },
+      },
       projects: {
-        orderBy: [{ updatedAt: "desc" }],
-        take: 6,
+        where: {
+          workspaceId,
+        },
+        orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
         select: {
           id: true,
           name: true,
@@ -83,12 +111,28 @@ export async function getClientDetailForWorkspace(
           priority: true,
           dueDate: true,
           updatedAt: true,
+          clientService: {
+            select: {
+              id: true,
+              type: true,
+              status: true,
+            },
+          },
         },
       },
       _count: {
         select: {
           contacts: true,
-          projects: true,
+          projects: {
+            where: {
+              workspaceId,
+            },
+          },
+          services: {
+            where: {
+              workspaceId,
+            },
+          },
           tasks: true,
           notes: true,
         },
