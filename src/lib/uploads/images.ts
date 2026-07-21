@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
 
-const DEFAULT_MAX_IMAGE_SIZE = 12 * 1024 * 1024;
+import { put } from "@vercel/blob";
+
+const DEFAULT_MAX_IMAGE_SIZE = 3 * 1024 * 1024;
 
 const ALLOWED_IMAGE_TYPES = new Map([
   ["image/jpeg", "jpg"],
@@ -36,28 +36,18 @@ export async function savePublicImageUpload({
   }
 
   if (file.size > maxBytes) {
-    throw new Error(`Image is too large. Max size is ${maxBytes} bytes.`);
+    const maxMegabytes = Math.floor(maxBytes / (1024 * 1024));
+    throw new Error(`Image is too large. Maximum size is ${maxMegabytes} MB.`);
   }
 
   const safeSegments = segments.map(sanitizeSegment).filter(Boolean);
+  const filename = `${Date.now()}-${randomUUID()}.${extension}`;
+  const pathname = ["uploads", ...safeSegments, filename].join("/");
 
-  const uploadDir = path.join(
-    process.cwd(),
-    "public",
-    "uploads",
-    ...safeSegments,
-  );
-
-  await mkdir(uploadDir, {
-    recursive: true,
+  const blob = await put(pathname, file, {
+    access: "public",
+    addRandomSuffix: false,
   });
 
-  const filename = `${Date.now()}-${randomUUID()}.${extension}`;
-  const absolutePath = path.join(uploadDir, filename);
-  const publicUrl = `/uploads/${safeSegments.join("/")}/${filename}`;
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(absolutePath, buffer);
-
-  return publicUrl;
+  return blob.url;
 }

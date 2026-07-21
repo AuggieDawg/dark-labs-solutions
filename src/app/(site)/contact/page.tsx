@@ -1,15 +1,44 @@
+import { ENGAGEMENTS } from "@/config/engagements";
 import { APP_CONFIG } from "@/config/app";
 
 export const metadata = {
-  title: "Contact",
+  title: "Start a Project",
   description:
-    "Discuss a custom website, lead funnel, integration, or web analytics engagement with Dark Labs.",
+    "Book a fit conversation for a Dark Labs Acquisition Blueprint, Conversion Website, Client Acquisition System, or optimization engagement.",
 };
 
-export default function ContactPage() {
-  const subject = encodeURIComponent("Dark Labs Project Inquiry");
+type ContactPageProps = {
+  searchParams?: Promise<{
+    engagement?: string;
+  }>;
+};
+
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const params = searchParams ? await searchParams : {};
+  const selectedEngagement = ENGAGEMENTS.find(
+    (engagement) => engagement.name === params.engagement,
+  );
+
+  const subject = encodeURIComponent(
+    selectedEngagement
+      ? `Dark Labs Inquiry — ${selectedEngagement.name}`
+      : "Dark Labs Project Inquiry",
+  );
   const body = encodeURIComponent(
-    "Tell me about the customer-acquisition system you want to improve:\n\nBusiness name:\nCurrent website:\nWhat you sell:\nHow customers find you today:\nWhere the current process creates friction:\nTimeline:\nBudget range:\n",
+    [
+      "Tell me about the customer-acquisition constraint you want to solve:",
+      "",
+      `Preferred engagement: ${selectedEngagement?.name ?? "Not sure yet"}`,
+      "Business name:",
+      "Current website:",
+      "What you sell and to whom:",
+      "How customers find you today:",
+      "Where the current process loses clarity, leads, or follow-up:",
+      "Primary result you want:",
+      "Target timeline:",
+      "Comfortable investment range:",
+      "",
+    ].join("\n"),
   );
 
   const emailHref = `mailto:${APP_CONFIG.contactEmail}?subject=${subject}&body=${body}`;
@@ -19,16 +48,31 @@ export default function ContactPage() {
       <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.42em] text-white/35">
-            Contact
+            Start a project
           </p>
           <h1 className="mt-6 text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            Start with how customers find and contact your business.
+            Start with the business constraint—not a feature list.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/55 md:text-lg">
-            Call directly or send a project inquiry. We will look at the offer,
-            customer flow, current website, lead follow-up, and measurement gap
-            to decide whether the Client Acquisition System is the right fit.
+            The first conversation is used to determine whether the problem is a
+            fit, which engagement is appropriate, and whether there is enough
+            operational clarity to begin. No pressure, no disguised discovery
+            workshop, and no proposal before the core constraint is understood.
           </p>
+
+          {selectedEngagement ? (
+            <div className="mt-8 rounded-3xl border border-white/15 bg-white/[0.06] p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/35">
+                Selected engagement
+              </p>
+              <p className="mt-3 text-xl font-semibold">
+                {selectedEngagement.name}
+              </p>
+              <p className="mt-2 text-sm text-white/50">
+                {selectedEngagement.investment} · {selectedEngagement.timeline}
+              </p>
+            </div>
+          ) : null}
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
@@ -41,41 +85,63 @@ export default function ContactPage() {
               href={emailHref}
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
             >
-              Email Project Inquiry
+              Email a Project Brief
             </a>
           </div>
+
+          <p className="mt-5 max-w-xl text-xs leading-6 text-white/35">
+            Dark Labs currently qualifies projects by direct conversation. A
+            structured CRM-backed intake form should replace email before paid
+            traffic is sent to this page.
+          </p>
         </div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
-            Best-fit projects
-          </p>
-
-          <div className="mt-8 grid gap-4">
-            {[
-              "You have an established service or operation but the website does not represent its real quality.",
-              "Customers struggle to understand the offer or take the next step.",
-              "Website inquiries need better capture, routing, or connection to an existing system.",
-              "You want analytics and post-launch support instead of guessing whether the website works.",
-            ].map((item) => (
-              <div
-                key={item}
-                className="rounded-3xl border border-white/10 bg-black/35 p-5"
-              >
-                <p className="text-sm leading-6 text-white/62">{item}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 rounded-3xl border border-white/10 bg-black/35 p-5">
-            <p className="text-sm font-semibold text-white">What to include</p>
-            <p className="mt-3 text-sm leading-6 text-white/48">
-              Business name, current website, what you sell, how customers find
-              you today, where the current process creates friction, timeline,
-              and budget range. Better context means a better first
-              conversation.
+        <div className="grid gap-5">
+          <section className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
+              What to include
             </p>
-          </div>
+
+            <div className="mt-8 grid gap-4">
+              {[
+                "What the business sells, who the best customer is, and what makes the offer meaningfully different.",
+                "How prospects find the business today and what they do before becoming a qualified sales conversation.",
+                "Where the current website, funnel, handoff, or measurement process creates friction.",
+                "The result, timeline, and investment range that would make the engagement commercially sensible.",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-3xl border border-white/10 bg-black/35 p-5"
+                >
+                  <p className="text-sm leading-6 text-white/62">{item}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
+              Engagement guide
+            </p>
+            <div className="mt-6 grid gap-3">
+              {ENGAGEMENTS.map((engagement) => (
+                <div
+                  key={engagement.slug}
+                  className="flex flex-col justify-between gap-2 rounded-2xl border border-white/10 bg-black/35 p-4 sm:flex-row sm:items-center"
+                >
+                  <div>
+                    <p className="text-sm font-semibold">{engagement.name}</p>
+                    <p className="mt-1 text-xs text-white/35">
+                      {engagement.timeline}
+                    </p>
+                  </div>
+                  <p className="text-sm font-semibold text-white/65">
+                    {engagement.investment}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </main>

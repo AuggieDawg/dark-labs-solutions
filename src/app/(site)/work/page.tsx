@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { prisma } from "@/lib/db/prisma";
@@ -5,44 +6,77 @@ import { prisma } from "@/lib/db/prisma";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Work",
+  title: "Selected Work",
   description:
-    "Selected Dark Labs custom website, lead funnel, integration, and web analytics case studies.",
+    "Client-approved Dark Labs case studies covering conversion websites, lead systems, integrations, launch controls, and measurable improvements.",
 };
 
-export default async function WorkPage() {
-  const projects = await prisma.project.findMany({
-    where: {
-      workPageEnabled: true,
-    },
-    orderBy: [{ workSortOrder: "asc" }, { workPublishedAt: "desc" }],
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      workTitle: true,
-      workClientLabel: true,
-      workSummary: true,
-      workDescription: true,
-      workChallenge: true,
-      workSolution: true,
-      workOutcome: true,
-      workWebsiteUrl: true,
-      updates: {
-        where: {
-          showOnWorkPage: true,
+async function loadPublishedProjects() {
+  try {
+    const projects = await prisma.project.findMany({
+      where: {
+        workPageEnabled: true,
+      },
+      orderBy: [{ workSortOrder: "asc" }, { workPublishedAt: "desc" }],
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        workTitle: true,
+        workClientLabel: true,
+        workSummary: true,
+        workDescription: true,
+        workChallenge: true,
+        workSolution: true,
+        workOutcome: true,
+        workWebsiteUrl: true,
+        beforeAfterAssets: {
+          where: {
+            publicEnabled: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+          select: {
+            id: true,
+            label: true,
+            notes: true,
+            beforeImageUrl: true,
+            afterImageUrl: true,
+          },
         },
-        orderBy: {
-          createdAt: "asc",
-        },
-        select: {
-          id: true,
-          title: true,
-          body: true,
+        updates: {
+          where: {
+            showOnWorkPage: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+          select: {
+            id: true,
+            title: true,
+            body: true,
+          },
         },
       },
-    },
-  });
+    });
+
+    return {
+      projects,
+      unavailable: false,
+    };
+  } catch (error) {
+    console.error("Unable to load public Work page projects", error);
+
+    return {
+      projects: [],
+      unavailable: true,
+    };
+  }
+}
+
+export default async function WorkPage() {
+  const { projects, unavailable } = await loadPublishedProjects();
 
   return (
     <main className="bg-black text-white">
@@ -52,27 +86,47 @@ export default async function WorkPage() {
             Selected work
           </p>
           <h1 className="mt-6 max-w-5xl text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            Real acquisition systems built around real businesses.
+            The business problem, the system built, and the proof approved for
+            public use.
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-white/55 md:text-lg">
-            Each project documents the problem, the system Dark Labs built, and
-            the client-approved proof that can be shared publicly.
+          <p className="mt-6 max-w-3xl text-base leading-8 text-white/55 md:text-lg">
+            Dark Labs publishes the reasoning behind the work—not inflated
+            claims or private client data. Results appear only when the
+            underlying measurement is credible and the client has approved the
+            public story.
           </p>
         </div>
       </section>
 
-      {projects.length === 0 ? (
+      {unavailable ? (
+        <section className="border-t border-white/10 px-6 py-24">
+          <div className="mx-auto max-w-7xl rounded-[2rem] border border-amber-200/15 bg-amber-200/[0.04] p-8 md:p-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-amber-100/55">
+              Publishing connection unavailable
+            </p>
+            <h2 className="mt-5 max-w-3xl text-3xl font-semibold tracking-[-0.045em] md:text-5xl">
+              The case-study library is temporarily unavailable.
+            </h2>
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-white/50">
+              The public site remains operational while the project publishing
+              connection is restored. No private Command Center data is exposed
+              by this fallback.
+            </p>
+          </div>
+        </section>
+      ) : projects.length === 0 ? (
         <section className="border-t border-white/10 px-6 py-24">
           <div className="mx-auto max-w-7xl rounded-[2rem] border border-white/10 bg-white/[0.035] p-8 md:p-12">
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
               Case studies
             </p>
             <h2 className="mt-5 max-w-3xl text-3xl font-semibold tracking-[-0.045em] md:text-5xl">
-              Client-approved project stories are being prepared.
+              The first client-approved project stories are being prepared.
             </h2>
             <p className="mt-5 max-w-2xl text-sm leading-7 text-white/50">
-              Dark Labs publishes a project here only after its public copy and
-              media have been selected in the Command Center.
+              Projects remain private by default. A case study appears here only
+              after its public copy, media, and selected updates are explicitly
+              enabled in the Command Center.
             </p>
           </div>
         </section>
@@ -82,7 +136,7 @@ export default async function WorkPage() {
             const projectId = `project-${project.slug || project.id}`;
             const storySections = [
               { label: "Challenge", body: project.workChallenge },
-              { label: "Solution", body: project.workSolution },
+              { label: "System", body: project.workSolution },
               { label: "Outcome", body: project.workOutcome },
             ].filter((item) => item.body);
 
@@ -133,6 +187,83 @@ export default async function WorkPage() {
                     </div>
                   </div>
 
+                  {project.beforeAfterAssets.length > 0 ? (
+                    <section className="mt-16">
+                      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/32">
+                            Selected visual proof
+                          </p>
+                          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/42">
+                            Only media explicitly marked public in the Command
+                            Center is rendered here.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 grid gap-5">
+                        {project.beforeAfterAssets.map((asset) => (
+                          <figure
+                            key={asset.id}
+                            className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.025]"
+                          >
+                            <div
+                              className={`grid gap-px bg-white/10 ${
+                                asset.beforeImageUrl && asset.afterImageUrl
+                                  ? "lg:grid-cols-2"
+                                  : ""
+                              }`}
+                            >
+                              {asset.beforeImageUrl ? (
+                                <div className="relative aspect-[16/10] bg-black">
+                                  <Image
+                                    src={asset.beforeImageUrl}
+                                    alt={`${asset.label || project.name} before`}
+                                    fill
+                                    sizes="(min-width: 1024px) 50vw, 100vw"
+                                    className="object-cover"
+                                  />
+                                  <span className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 backdrop-blur">
+                                    Before
+                                  </span>
+                                </div>
+                              ) : null}
+                              {asset.afterImageUrl ? (
+                                <div className="relative aspect-[16/10] bg-black">
+                                  <Image
+                                    src={asset.afterImageUrl}
+                                    alt={`${asset.label || project.name} after`}
+                                    fill
+                                    sizes="(min-width: 1024px) 50vw, 100vw"
+                                    className="object-cover"
+                                  />
+                                  <span className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 backdrop-blur">
+                                    After
+                                  </span>
+                                </div>
+                              ) : null}
+                            </div>
+
+                            {asset.label || asset.notes ? (
+                              <figcaption className="p-6">
+                                {asset.label ? (
+                                  <p className="text-sm font-semibold text-white/75">
+                                    {asset.label}
+                                  </p>
+                                ) : null}
+                                {asset.notes ? (
+                                  <p className="mt-2 whitespace-pre-line text-sm leading-6 text-white/45">
+                                    {asset.notes}
+                                  </p>
+                                ) : null}
+                              </figcaption>
+                            ) : null}
+                          </figure>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+
                   {storySections.length > 0 ? (
                     <div className="mt-16 grid gap-4 lg:grid-cols-3">
                       {storySections.map((section) => (
@@ -154,7 +285,7 @@ export default async function WorkPage() {
                   {project.updates.length > 0 ? (
                     <section className="mt-16 rounded-[2rem] border border-white/10 bg-white/[0.025] p-6 md:p-8">
                       <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/32">
-                        Selected project notes
+                        Selected implementation notes
                       </p>
                       <div className="mt-6 grid gap-4 lg:grid-cols-2">
                         {project.updates.map((update) => (
@@ -189,14 +320,14 @@ export default async function WorkPage() {
               Your project
             </p>
             <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-              Build the next measurable customer-acquisition system.
+              Build the next system worth documenting.
             </h2>
           </div>
           <Link
             href="/contact"
             className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
           >
-            Start a Project
+            Book a Fit Call
           </Link>
         </div>
       </section>
