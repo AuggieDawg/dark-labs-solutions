@@ -1,8 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { APP_CONFIG } from "@/config/app";
 
 export function FloatingConversionDock() {
+  const pathname = usePathname();
+
+  if (pathname === "/contact" || pathname.startsWith("/contact/")) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-full border border-white/10 bg-black/45 p-2 shadow-2xl shadow-black/60 backdrop-blur-2xl md:bottom-6 md:left-auto md:right-6 md:w-auto md:translate-x-0">
       <div className="grid grid-cols-2 gap-2 md:flex">

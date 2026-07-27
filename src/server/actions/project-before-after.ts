@@ -74,6 +74,16 @@ async function requireOwnedBeforeAfterAsset(assetId: string) {
   };
 }
 
+function revalidateProjectPublishing(projectId: string) {
+  revalidatePath("/owner");
+  revalidatePath("/owner/projects");
+  revalidatePath(`/owner/projects/${projectId}`);
+  revalidatePath(`/owner/projects/${projectId}/before-after`);
+  revalidatePath(`/owner/projects/${projectId}/work-page`);
+  revalidatePath("/services");
+  revalidatePath("/work");
+}
+
 export async function createProjectBeforeAfterAssetAction(
   projectId: string,
   formData: FormData,
@@ -90,6 +100,14 @@ export async function createProjectBeforeAfterAssetAction(
 
   if (!beforeImage && !afterImage) {
     throw new Error("Upload at least one before or after image");
+  }
+
+  const totalUploadBytes = (beforeImage?.size ?? 0) + (afterImage?.size ?? 0);
+
+  if (totalUploadBytes > 3 * 1024 * 1024) {
+    throw new Error(
+      "Before and after images must total 3 MB or less per submission",
+    );
   }
 
   const [beforeImageUrl, afterImageUrl] = await Promise.all([
@@ -131,11 +149,7 @@ export async function createProjectBeforeAfterAssetAction(
     },
   });
 
-  revalidatePath("/owner");
-  revalidatePath("/owner/projects");
-  revalidatePath(`/owner/projects/${project.id}`);
-  revalidatePath(`/owner/projects/${project.id}/before-after`);
-  revalidatePath("/services");
+  revalidateProjectPublishing(project.id);
 }
 
 export async function updateProjectBeforeAfterAssetAction(
@@ -170,9 +184,5 @@ export async function updateProjectBeforeAfterAssetAction(
     },
   });
 
-  revalidatePath("/owner");
-  revalidatePath("/owner/projects");
-  revalidatePath(`/owner/projects/${asset.project.id}`);
-  revalidatePath(`/owner/projects/${asset.project.id}/before-after`);
-  revalidatePath("/services");
+  revalidateProjectPublishing(asset.project.id);
 }

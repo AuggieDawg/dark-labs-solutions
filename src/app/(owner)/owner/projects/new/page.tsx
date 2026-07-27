@@ -2,10 +2,12 @@ import Link from "next/link";
 
 import { ProjectPriority, ProjectStatus, Visibility } from "@/generated/prisma";
 
+import { OwnerFormSubmitButton } from "@/components/owner/OwnerFormSubmitButton";
 import { requireOwner } from "@/lib/auth/require";
 import { formatEnumLabel } from "@/lib/utils/format";
 import { createProjectAction } from "@/server/actions/projects";
 import { getClientsForProjectSelect } from "@/server/queries/projects";
+import { ClientProjectAssignmentFields } from "../ClientProjectAssignmentFields";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +18,7 @@ export const metadata = {
 type NewProjectPageProps = {
   searchParams?: Promise<{
     clientId?: string;
+    clientServiceId?: string;
   }>;
 };
 
@@ -29,7 +32,16 @@ export default async function NewProjectPage({
   const owner = await requireOwner();
   const clients = await getClientsForProjectSelect(owner.workspaceId);
   const params = searchParams ? await searchParams : {};
-  const selectedClientId = params.clientId ?? "";
+  const selectedClientId = clients.some(
+    (client) => client.id === params.clientId,
+  )
+    ? (params.clientId ?? "")
+    : "";
+  const selectedClientServiceId = clients.some((client) =>
+    client.services.some((service) => service.id === params.clientServiceId),
+  )
+    ? (params.clientServiceId ?? "")
+    : "";
 
   return (
     <section className="px-5 py-8 lg:px-10">
@@ -69,24 +81,11 @@ export default async function NewProjectPage({
               />
             </label>
 
-            <label className="grid gap-2">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
-                Client
-              </span>
-              <select
-                name="clientId"
-                defaultValue={selectedClientId}
-                className="h-12 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm text-white outline-none focus:border-white/25"
-              >
-                <option value="">Internal / no client</option>
-                {clients.map((client) => (
-                  <option key={client.id} value={client.id}>
-                    {client.name}
-                    {client.company ? ` — ${client.company}` : ""}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <ClientProjectAssignmentFields
+              clients={clients}
+              initialClientId={selectedClientId}
+              initialClientServiceId={selectedClientServiceId}
+            />
 
             <label className="grid gap-2">
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
@@ -219,12 +218,12 @@ export default async function NewProjectPage({
           </label>
 
           <div className="flex justify-end">
-            <button
-              type="submit"
+            <OwnerFormSubmitButton
+              pendingLabel="Creating project..."
               className="h-12 rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
             >
-              Create Project
-            </button>
+              Create project
+            </OwnerFormSubmitButton>
           </div>
         </form>
       </div>

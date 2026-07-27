@@ -65,6 +65,13 @@ export async function listProjectsForWorkspace({
           logoUrl: true,
         },
       },
+      clientService: {
+        select: {
+          id: true,
+          type: true,
+          status: true,
+        },
+      },
       _count: {
         select: {
           milestones: true,
@@ -95,6 +102,14 @@ export async function getProjectDetailForWorkspace(
           name: true,
           company: true,
           logoUrl: true,
+        },
+      },
+      clientService: {
+        select: {
+          id: true,
+          type: true,
+          status: true,
+          clientId: true,
         },
       },
       milestones: {
@@ -143,6 +158,74 @@ export async function getClientsForProjectSelect(workspaceId: string) {
       name: true,
       company: true,
       status: true,
+      services: {
+        orderBy: [{ type: "asc" }],
+        select: {
+          id: true,
+          type: true,
+          status: true,
+        },
+      },
     },
   });
+}
+
+export async function resolveProjectClientAssignmentForWorkspace(
+  workspaceId: string,
+  clientId: string | null,
+  clientServiceId: string | null,
+) {
+  if (!clientId) {
+    if (clientServiceId) {
+      throw new Error("Select a client before selecting a service workstream");
+    }
+
+    return {
+      clientId: null,
+      clientServiceId: null,
+    };
+  }
+
+  const client = await prisma.client.findFirst({
+    where: {
+      id: clientId,
+      workspaceId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!client) {
+    throw new Error("Client not found");
+  }
+
+  if (!clientServiceId) {
+    return {
+      clientId: client.id,
+      clientServiceId: null,
+    };
+  }
+
+  const clientService = await prisma.clientService.findFirst({
+    where: {
+      id: clientServiceId,
+      workspaceId,
+      clientId: client.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!clientService) {
+    throw new Error(
+      "Service workstream must belong to the selected client and workspace",
+    );
+  }
+
+  return {
+    clientId: client.id,
+    clientServiceId: clientService.id,
+  };
 }

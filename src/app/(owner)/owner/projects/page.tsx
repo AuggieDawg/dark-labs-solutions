@@ -128,6 +128,11 @@ export default async function OwnerProjectsPage({
                   <p className="mt-1 text-sm text-white/45">
                     {project.client?.name || "Internal / no client"}
                   </p>
+                  {project.clientService ? (
+                    <span className="mt-3 inline-flex rounded-full border border-sky-200/20 bg-sky-200/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-sky-100">
+                      {formatEnumLabel(project.clientService.type)}
+                    </span>
+                  ) : null}
                 </div>
 
                 <div>

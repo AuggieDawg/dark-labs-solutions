@@ -15,6 +15,7 @@ import {
 import { requireOwner } from "@/lib/auth/require";
 import { prisma } from "@/lib/db/prisma";
 import { slugify } from "@/lib/utils/slug";
+import { resolveProjectClientAssignmentForWorkspace } from "@/server/queries/projects";
 
 const PROJECT_STATUS_VALUES = new Set<string>(Object.values(ProjectStatus));
 const PROJECT_PRIORITY_VALUES = new Set<string>(Object.values(ProjectPriority));
@@ -170,31 +171,6 @@ function parseDeliverableStatus(value: FormDataEntryValue | null) {
     : DeliverableStatus.DRAFT;
 }
 
-async function resolveClientIdForWorkspace(
-  workspaceId: string,
-  clientId: string | null,
-) {
-  if (!clientId) {
-    return null;
-  }
-
-  const client = await prisma.client.findFirst({
-    where: {
-      id: clientId,
-      workspaceId,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (!client) {
-    throw new Error("Client not found");
-  }
-
-  return client.id;
-}
-
 async function generateUniqueProjectSlug(workspaceId: string, name: string) {
   const base = slugify(name) || "project";
   let candidate = base;
@@ -230,6 +206,8 @@ async function requireOwnedProject(projectId: string) {
       id: true,
       name: true,
       workspaceId: true,
+      clientId: true,
+      clientServiceId: true,
       workPageEnabled: true,
       workPublishedAt: true,
     },
@@ -363,9 +341,10 @@ export async function createProjectAction(formData: FormData) {
   const owner = await requireOwner();
 
   const name = requiredText(formData, "name", "Project name");
-  const clientId = await resolveClientIdForWorkspace(
+  const assignment = await resolveProjectClientAssignmentForWorkspace(
     owner.workspaceId,
     optionalText(formData, "clientId"),
+    optionalText(formData, "clientServiceId"),
   );
 
   const slug = await generateUniqueProjectSlug(owner.workspaceId, name);
@@ -373,7 +352,8 @@ export async function createProjectAction(formData: FormData) {
   const project = await prisma.project.create({
     data: {
       workspaceId: owner.workspaceId,
-      clientId,
+      clientId: assignment.clientId,
+      clientServiceId: assignment.clientServiceId,
       name,
       slug,
       status: parseProjectStatus(formData.get("status")),
@@ -406,7 +386,8 @@ export async function createProjectAction(formData: FormData) {
       action: "project.created",
       summary: `Created project ${project.name}`,
       metadata: {
-        clientId,
+        clientId: assignment.clientId,
+        clientServiceId: assignment.clientServiceId,
         status: project.status,
         priority: project.priority,
       },
@@ -416,6 +397,9 @@ export async function createProjectAction(formData: FormData) {
   revalidatePath("/owner");
   revalidatePath("/owner/projects");
   revalidatePath("/owner/clients");
+  if (assignment.clientId) {
+    revalidatePath(`/owner/clients/${assignment.clientId}`);
+  }
   revalidatePath("/services");
 
   redirect(`/owner/projects/${project.id}`);
@@ -428,9 +412,10 @@ export async function updateProjectAction(
   const { owner, project } = await requireOwnedProject(projectId);
 
   const name = requiredText(formData, "name", "Project name");
-  const clientId = await resolveClientIdForWorkspace(
+  const assignment = await resolveProjectClientAssignmentForWorkspace(
     owner.workspaceId,
     optionalText(formData, "clientId"),
+    optionalText(formData, "clientServiceId"),
   );
 
   const updated = await prisma.project.update({
@@ -438,7 +423,8 @@ export async function updateProjectAction(
       id: project.id,
     },
     data: {
-      clientId,
+      clientId: assignment.clientId,
+      clientServiceId: assignment.clientServiceId,
       name,
       status: parseProjectStatus(formData.get("status")),
       priority: parseProjectPriority(formData.get("priority")),
@@ -473,6 +459,8 @@ export async function updateProjectAction(
         previousName: project.name,
         status: updated.status,
         priority: updated.priority,
+        clientId: assignment.clientId,
+        clientServiceId: assignment.clientServiceId,
       },
     },
   });
@@ -481,6 +469,13 @@ export async function updateProjectAction(
   revalidatePath("/owner/projects");
   revalidatePath(`/owner/projects/${project.id}`);
   revalidatePath("/owner/clients");
+  for (const clientId of new Set(
+    [project.clientId, assignment.clientId].filter((value): value is string =>
+      Boolean(value),
+    ),
+  )) {
+    revalidatePath(`/owner/clients/${clientId}`);
+  }
   revalidatePath("/services");
 }
 
