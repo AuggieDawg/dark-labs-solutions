@@ -718,8 +718,9 @@ model TaskComment {
 }
 
 model Goal {
-  id          String @id @default(cuid())
-  workspaceId String
+  id           String  @id @default(cuid())
+  workspaceId  String
+  parentGoalId String?
 
   title           String
   area            GoalArea
@@ -732,6 +733,11 @@ model Goal {
   targetDate  DateTime?
   completedAt DateTime?
   progress    Int       @default(0)
+  isMaster    Boolean   @default(false)
+
+  // Goal relationship map coordinates
+  mapX Float @default(80)
+  mapY Float @default(80)
 
   visibility Visibility @default(OWNER_ONLY)
 
@@ -739,12 +745,16 @@ model Goal {
   updatedAt DateTime @updatedAt
 
   workspace  Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  parentGoal Goal?           @relation("GoalHierarchy", fields: [parentGoalId], references: [id], onDelete: SetNull)
+  childGoals Goal[]          @relation("GoalHierarchy")
   milestones GoalMilestone[]
   notes      Note[]
 
   @@index([workspaceId, status])
   @@index([workspaceId, area])
   @@index([workspaceId, priority])
+  @@index([workspaceId, isMaster])
+  @@index([parentGoalId])
 }
 
 model GoalMilestone {
