@@ -5,10 +5,10 @@ import { VideoHero } from "@/components/site/VideoHero";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Conversion Websites & Client Acquisition Systems | Dark Labs",
+    absolute: "Business Websites Built to Earn Trust & Leads | Dark Labs",
   },
   description:
-    "Founder-led business technology consulting, conversion websites, lead systems, integrations, and honest measurement for established service businesses.",
+    "Founder-led business technology consulting, custom websites, lead systems, integrations, and web analytics for established businesses.",
 };
 
 export default function HomePage() {

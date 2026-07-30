@@ -106,7 +106,7 @@ export const leadIntakeSchema = z.object({
   businessConstraint: z
     .string()
     .trim()
-    .min(20, "Give us at least a sentence about the business constraint.")
+    .min(20, "Tell me at least a sentence about what you want to improve.")
     .max(2_000, "Use 2,000 characters or fewer."),
   desiredOutcome: z
     .string()

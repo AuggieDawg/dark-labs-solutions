@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { TimeZoneBadge } from "@/components/site/TimeZoneBadge";
 import { APP_CONFIG } from "@/config/app";
 
 export function SiteNav() {
@@ -57,8 +56,6 @@ export function SiteNav() {
         </nav>
 
         <div className="pointer-events-auto flex items-center gap-2">
-          <TimeZoneBadge />
-
           <a
             href={APP_CONFIG.phoneHref}
             className="hidden rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/75 shadow-2xl shadow-black/30 backdrop-blur-xl transition hover:bg-white hover:text-black lg:inline-flex"
@@ -70,15 +67,7 @@ export function SiteNav() {
             href="/contact"
             className="whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-2xl shadow-black/30 transition hover:bg-white/90 sm:px-5"
           >
-            <span className="sm:hidden">Contact</span>
-            <span className="hidden sm:inline">Start a Project</span>
-          </Link>
-
-          <Link
-            href="/owner"
-            className="hidden rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/60 shadow-2xl shadow-black/30 backdrop-blur-xl transition hover:bg-white/[0.08] hover:text-white sm:inline-flex"
-          >
-            Command
+            Talk to Agustin
           </Link>
         </div>
       </div>

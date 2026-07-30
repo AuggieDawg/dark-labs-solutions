@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 import { VideoBackdrop } from "@/components/site/VideoBackdrop";
+import { APP_CONFIG } from "@/config/app";
 
 const capabilities = [
   "Custom Websites",
   "Funnels + Integrations",
   "Web Analytics",
-  "Launch + Stabilization",
 ];
 
 export function VideoHero() {
@@ -17,40 +17,50 @@ export function VideoHero() {
           <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/30 px-4 py-2 shadow-2xl shadow-black/40 backdrop-blur-xl">
             <span className="h-1.5 w-1.5 rounded-full bg-white" />
             <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/60 md:text-xs">
-              Founder-led consulting · websites · lead systems · measurement
+              Founder-led business technology consulting
             </span>
           </div>
 
           <h1 className="mt-7 max-w-6xl text-5xl font-semibold leading-[0.92] tracking-[-0.07em] text-white drop-shadow-[0_4px_32px_rgba(0,0,0,0.85)] md:text-7xl xl:text-8xl">
-            Websites that turn attention into qualified sales conversations.
+            Make your business easier to find, trust, and contact.
           </h1>
 
           <p className="mt-7 max-w-3xl text-base leading-8 text-white/68 md:text-lg">
-            Dark Labs plans and builds conversion-focused websites, lead
-            systems, integrations, and measurement for established service
-            businesses. Every decision stays tied to how customers find you,
-            trust you, contact you, and how your team follows through.
+            Dark Labs plans and builds custom websites, dependable lead paths,
+            targeted integrations, and web analytics for established businesses.
           </p>
 
           <p className="mt-5 max-w-3xl border-l border-white/25 pl-4 text-sm leading-6 text-white/58">
-            My name and reputation are attached to what I build. I plan
-            carefully, tell you what I know and what still needs to be verified,
-            and remain accountable through launch and the agreed stabilization
-            period.
+            Work directly with me, Agustin—the person responsible for
+            understanding the business, planning the system, building it, and
+            standing behind the agreed work through launch and stabilization.
           </p>
 
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/contact"
               className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
             >
               Talk to Agustin
             </Link>
-            <Link
-              href="/work"
+            <a
+              href={APP_CONFIG.phoneHref}
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.08] px-6 text-sm font-semibold text-white backdrop-blur-xl transition hover:bg-white/[0.14]"
             >
-              See How the Work Is Built
+              Call {APP_CONFIG.phoneDisplay}
+            </a>
+          </div>
+
+          <div className="mt-5 flex flex-col items-start gap-3 text-sm text-white/55 sm:flex-row sm:items-center sm:gap-5">
+            <p>
+              No technical brief needed. Start with what is happening in the
+              business.
+            </p>
+            <Link
+              href="/work"
+              className="font-semibold text-white/75 underline decoration-white/25 underline-offset-8 transition hover:text-white"
+            >
+              See the Repete Auto work
             </Link>
           </div>
 

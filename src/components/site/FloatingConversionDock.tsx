@@ -19,14 +19,14 @@ export function FloatingConversionDock() {
           href={APP_CONFIG.phoneHref}
           className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.08] px-5 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
         >
-          Call
+          Call Agustin
         </a>
 
         <Link
           href="/contact"
           className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:bg-white/90"
         >
-          Start a Project
+          Talk to Agustin
         </Link>
       </div>
     </div>

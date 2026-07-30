@@ -47,6 +47,28 @@ describe("leadIntakeSchema", () => {
     expect(parsed.utmTerm).toBeUndefined();
   });
 
+  it("accepts the simplified first-contact fields without optional qualification details", () => {
+    const parsed = leadIntakeSchema.parse(
+      validLeadInput({
+        phone: "",
+        websiteUrl: "",
+        engagementSlug: "",
+        desiredOutcome: "",
+        timeline: "",
+        budgetRange: "",
+        referralSource: "",
+      }),
+    );
+
+    expect(parsed.phone).toBeUndefined();
+    expect(parsed.websiteUrl).toBeUndefined();
+    expect(parsed.engagementSlug).toBeUndefined();
+    expect(parsed.desiredOutcome).toBeUndefined();
+    expect(parsed.timeline).toBeUndefined();
+    expect(parsed.budgetRange).toBeUndefined();
+    expect(parsed.referralSource).toBeUndefined();
+  });
+
   it("rejects invalid contact, qualification, consent, and enum values", () => {
     const result = leadIntakeSchema.safeParse(
       validLeadInput({

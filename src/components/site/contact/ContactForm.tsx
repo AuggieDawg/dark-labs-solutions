@@ -51,7 +51,7 @@ const fieldLabels: Record<string, string> = {
   businessName: "Business name",
   websiteUrl: "Current website",
   engagementSlug: "Preferred engagement",
-  businessConstraint: "Business constraint",
+  businessConstraint: "What are you trying to improve?",
   desiredOutcome: "Desired outcome",
   timeline: "Target timeline",
   budgetRange: "Comfortable investment range",
@@ -103,7 +103,7 @@ function SubmitButton() {
       aria-disabled={pending}
       className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-wait disabled:opacity-65"
     >
-      {pending ? "Sending project context…" : "Send Project Context"}
+      {pending ? "Sending business context…" : "Send My Business Context"}
     </button>
   );
 }
@@ -165,6 +165,13 @@ export function ContactForm({
         message,
       })),
   );
+  const optionalDetailsHaveErrors = [
+    "engagementSlug",
+    "desiredOutcome",
+    "timeline",
+    "budgetRange",
+    "referralSource",
+  ].some((name) => fieldErrors(state, name).length > 0);
 
   return (
     <section className="rounded-[2rem] border border-white/12 bg-white/[0.045] p-6 shadow-2xl shadow-black/30 md:p-8">
@@ -172,14 +179,15 @@ export function ContactForm({
         Business context
       </p>
       <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] md:text-4xl">
-        Give me the business context—not a polished technical brief.
+        Tell me what is happening in the business.
       </h2>
       <p
         id="contact-form-description"
         className="mt-4 text-sm leading-7 text-white/65"
       >
-        Required fields are marked with an asterisk. Share what you know today;
-        you do not need to diagnose the technical solution yourself.
+        Start with your name, business, best contact details, and what you want
+        to improve. Everything else is optional, and you do not need to diagnose
+        the technical solution yourself.
       </p>
 
       {state.status === "error" ? (
@@ -313,46 +321,6 @@ export function ContactForm({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="email" className={labelClass}>
-              Work email <span aria-hidden="true">*</span>
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              maxLength={254}
-              autoComplete="email"
-              inputMode="email"
-              aria-invalid={fieldErrors(state, "email").length > 0}
-              aria-describedby={describedBy(state, "email")}
-              className={controlClass}
-            />
-            <FieldError state={state} name="email" />
-          </div>
-
-          <div>
-            <label htmlFor="phone" className={labelClass}>
-              Phone{" "}
-              <span className="font-normal text-white/55">(optional)</span>
-            </label>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              maxLength={40}
-              autoComplete="tel"
-              inputMode="tel"
-              aria-invalid={fieldErrors(state, "phone").length > 0}
-              aria-describedby={describedBy(state, "phone")}
-              className={controlClass}
-            />
-            <FieldError state={state} name="phone" />
-          </div>
-        </div>
-
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div>
             <label htmlFor="businessName" className={labelClass}>
               Business name <span aria-hidden="true">*</span>
             </label>
@@ -392,33 +360,70 @@ export function ContactForm({
           </div>
         </div>
 
-        <div>
-          <label htmlFor="engagementSlug" className={labelClass}>
-            Preferred engagement{" "}
-            <span className="font-normal text-white/55">(optional)</span>
-          </label>
-          <select
-            id="engagementSlug"
-            name="engagementSlug"
-            defaultValue={selectedEngagementSlug}
-            aria-invalid={fieldErrors(state, "engagementSlug").length > 0}
-            aria-describedby={describedBy(state, "engagementSlug")}
-            className={controlClass}
+        <fieldset className="rounded-2xl border border-white/10 bg-black/20 p-4">
+          <legend className="px-1 text-sm font-semibold text-white/85">
+            How should I contact you?
+          </legend>
+          <p
+            id="contact-details-help"
+            className="mt-1 text-xs leading-5 text-white/55"
           >
-            <option value="">Not sure yet</option>
-            {ENGAGEMENTS.map((engagement) => (
-              <option key={engagement.slug} value={engagement.slug}>
-                {engagement.name}
-              </option>
-            ))}
-          </select>
-          <FieldError state={state} name="engagementSlug" />
-        </div>
+            Email is required for a reliable reply. Add your phone number if a
+            call or text is your preferred follow-up.
+          </p>
+
+          <div className="mt-3 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="email" className={labelClass}>
+                Work email <span aria-hidden="true">*</span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                maxLength={254}
+                autoComplete="email"
+                inputMode="email"
+                aria-invalid={fieldErrors(state, "email").length > 0}
+                aria-describedby={describedBy(
+                  state,
+                  "email",
+                  "contact-details-help",
+                )}
+                className={controlClass}
+              />
+              <FieldError state={state} name="email" />
+            </div>
+
+            <div>
+              <label htmlFor="phone" className={labelClass}>
+                Phone{" "}
+                <span className="font-normal text-white/55">(optional)</span>
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                maxLength={40}
+                autoComplete="tel"
+                inputMode="tel"
+                aria-invalid={fieldErrors(state, "phone").length > 0}
+                aria-describedby={describedBy(
+                  state,
+                  "phone",
+                  "contact-details-help",
+                )}
+                className={controlClass}
+              />
+              <FieldError state={state} name="phone" />
+            </div>
+          </div>
+        </fieldset>
 
         <div>
           <label htmlFor="businessConstraint" className={labelClass}>
-            What business constraint are you trying to solve?{" "}
-            <span aria-hidden="true">*</span>
+            What are you trying to improve? <span aria-hidden="true">*</span>
           </label>
           <textarea
             id="businessConstraint"
@@ -427,7 +432,7 @@ export function ContactForm({
             minLength={20}
             maxLength={2000}
             rows={6}
-            placeholder="Describe where the current website, funnel, handoff, or measurement process is losing clarity, leads, or momentum—and anything you are worried could become expensive later."
+            placeholder="Tell me what is happening now, what feels stuck, and what you would like to work better."
             aria-invalid={fieldErrors(state, "businessConstraint").length > 0}
             aria-describedby={describedBy(
               state,
@@ -443,95 +448,144 @@ export function ContactForm({
           <FieldError state={state} name="businessConstraint" />
         </div>
 
-        <div>
-          <label htmlFor="desiredOutcome" className={labelClass}>
-            What result would make this project worthwhile?{" "}
-            <span className="font-normal text-white/55">(optional)</span>
-          </label>
-          <textarea
-            id="desiredOutcome"
-            name="desiredOutcome"
-            maxLength={1000}
-            rows={4}
-            aria-invalid={fieldErrors(state, "desiredOutcome").length > 0}
-            aria-describedby={describedBy(
-              state,
-              "desiredOutcome",
-              "desiredOutcome-help",
-            )}
-            className={controlClass}
-          />
-          <p id="desiredOutcome-help" className={helpClass}>
-            A measurable outcome is useful, but a clear practical result is
-            enough.
-          </p>
-          <FieldError state={state} name="desiredOutcome" />
-        </div>
+        <details
+          open={Boolean(selectedEngagementSlug) || optionalDetailsHaveErrors}
+          className="group rounded-2xl border border-white/10 bg-black/20 p-4"
+        >
+          <summary className="cursor-pointer list-none rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+            <span className="flex items-center justify-between gap-4">
+              <span>
+                <span className="block text-sm font-semibold text-white/85">
+                  Add optional project details
+                </span>
+                <span className="mt-1 block text-xs leading-5 text-white/55">
+                  Engagement, result, timeline, budget, and referral source
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                className="text-lg text-white/55 transition group-open:rotate-45"
+              >
+                +
+              </span>
+            </span>
+          </summary>
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div>
-            <label htmlFor="timeline" className={labelClass}>
-              Target timeline{" "}
-              <span className="font-normal text-white/55">(optional)</span>
-            </label>
-            <select
-              id="timeline"
-              name="timeline"
-              defaultValue=""
-              aria-invalid={fieldErrors(state, "timeline").length > 0}
-              aria-describedby={describedBy(state, "timeline")}
-              className={controlClass}
-            >
-              <option value="">Select a timeline</option>
-              {LEAD_TIMELINE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <FieldError state={state} name="timeline" />
+          <div className="mt-6 grid gap-6 border-t border-white/10 pt-6">
+            <div>
+              <label htmlFor="engagementSlug" className={labelClass}>
+                Preferred engagement{" "}
+                <span className="font-normal text-white/55">(optional)</span>
+              </label>
+              <select
+                id="engagementSlug"
+                name="engagementSlug"
+                defaultValue={selectedEngagementSlug}
+                aria-invalid={fieldErrors(state, "engagementSlug").length > 0}
+                aria-describedby={describedBy(state, "engagementSlug")}
+                className={controlClass}
+              >
+                <option value="">Not sure yet</option>
+                {ENGAGEMENTS.map((engagement) => (
+                  <option key={engagement.slug} value={engagement.slug}>
+                    {engagement.name}
+                  </option>
+                ))}
+              </select>
+              <FieldError state={state} name="engagementSlug" />
+            </div>
+
+            <div>
+              <label htmlFor="desiredOutcome" className={labelClass}>
+                What result would make this project worthwhile?{" "}
+                <span className="font-normal text-white/55">(optional)</span>
+              </label>
+              <textarea
+                id="desiredOutcome"
+                name="desiredOutcome"
+                maxLength={1000}
+                rows={4}
+                aria-invalid={fieldErrors(state, "desiredOutcome").length > 0}
+                aria-describedby={describedBy(
+                  state,
+                  "desiredOutcome",
+                  "desiredOutcome-help",
+                )}
+                className={controlClass}
+              />
+              <p id="desiredOutcome-help" className={helpClass}>
+                A measurable outcome is useful, but a clear practical result is
+                enough.
+              </p>
+              <FieldError state={state} name="desiredOutcome" />
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label htmlFor="timeline" className={labelClass}>
+                  Target timeline{" "}
+                  <span className="font-normal text-white/55">(optional)</span>
+                </label>
+                <select
+                  id="timeline"
+                  name="timeline"
+                  defaultValue=""
+                  aria-invalid={fieldErrors(state, "timeline").length > 0}
+                  aria-describedby={describedBy(state, "timeline")}
+                  className={controlClass}
+                >
+                  <option value="">Select a timeline</option>
+                  {LEAD_TIMELINE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <FieldError state={state} name="timeline" />
+              </div>
+
+              <div>
+                <label htmlFor="budgetRange" className={labelClass}>
+                  Comfortable investment range{" "}
+                  <span className="font-normal text-white/55">(optional)</span>
+                </label>
+                <select
+                  id="budgetRange"
+                  name="budgetRange"
+                  defaultValue=""
+                  aria-invalid={fieldErrors(state, "budgetRange").length > 0}
+                  aria-describedby={describedBy(state, "budgetRange")}
+                  className={controlClass}
+                >
+                  <option value="">Select a range</option>
+                  {LEAD_BUDGET_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <FieldError state={state} name="budgetRange" />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="referralSource" className={labelClass}>
+                How did you hear about Dark Labs?{" "}
+                <span className="font-normal text-white/55">(optional)</span>
+              </label>
+              <input
+                id="referralSource"
+                name="referralSource"
+                type="text"
+                maxLength={200}
+                aria-invalid={fieldErrors(state, "referralSource").length > 0}
+                aria-describedby={describedBy(state, "referralSource")}
+                className={controlClass}
+              />
+              <FieldError state={state} name="referralSource" />
+            </div>
           </div>
-
-          <div>
-            <label htmlFor="budgetRange" className={labelClass}>
-              Comfortable investment range{" "}
-              <span className="font-normal text-white/55">(optional)</span>
-            </label>
-            <select
-              id="budgetRange"
-              name="budgetRange"
-              defaultValue=""
-              aria-invalid={fieldErrors(state, "budgetRange").length > 0}
-              aria-describedby={describedBy(state, "budgetRange")}
-              className={controlClass}
-            >
-              <option value="">Select a range</option>
-              {LEAD_BUDGET_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <FieldError state={state} name="budgetRange" />
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="referralSource" className={labelClass}>
-            How did you hear about Dark Labs?{" "}
-            <span className="font-normal text-white/55">(optional)</span>
-          </label>
-          <input
-            id="referralSource"
-            name="referralSource"
-            type="text"
-            maxLength={200}
-            aria-invalid={fieldErrors(state, "referralSource").length > 0}
-            aria-describedby={describedBy(state, "referralSource")}
-            className={controlClass}
-          />
-          <FieldError state={state} name="referralSource" />
-        </div>
+        </details>
 
         <div className="rounded-2xl border border-white/12 bg-black/30 p-4">
           <div className="flex items-start gap-3">

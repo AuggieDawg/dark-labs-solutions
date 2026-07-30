@@ -1,49 +1,65 @@
 import Link from "next/link";
-import { ENGAGEMENTS } from "@/config/engagements";
+import { APP_CONFIG } from "@/config/app";
 
-const outcomes = [
+const businessProblems = [
   {
     number: "01",
-    title: "Make the offer unmistakable",
-    body: "The right customer should quickly understand what you do, who it is for, and why your business deserves the next conversation.",
+    title: "The website undersells the business",
+    body: "Your real-world reputation is stronger than the experience customers get when they look you up online.",
   },
   {
     number: "02",
-    title: "Earn confidence before the call",
-    body: "Strong messaging, credible proof, and a professional customer experience begin building trust before you enter the room.",
+    title: "Good inquiries lose momentum",
+    body: "Customers click, call, or submit a form, but the path to the right person is slow, unclear, or difficult to verify.",
   },
   {
     number: "03",
-    title: "Build a dependable inquiry path",
-    body: "An inquiry becomes actionable when it reaches the right person, with the right context, through a tested delivery path.",
+    title: "The tools do not work together",
+    body: "The website, email, booking, inventory, notifications, and follow-up process feel like separate pieces instead of one customer journey.",
   },
   {
     number: "04",
-    title: "Measure what matters",
-    body: "Track meaningful customer actions so future decisions are based on evidence—not assumptions, pageviews, or sales language.",
+    title: "You cannot see what is working",
+    body: "Traffic may be visible, but meaningful actions such as calls, inquiries, bookings, or service interest are not measured clearly.",
+  },
+];
+
+const services = [
+  {
+    number: "01",
+    title: "Custom Websites",
+    headline: "Make the business as credible online as it is in person.",
+    body: "Custom strategy, content structure, design, and development built around your customers, services, proof, and next step.",
+  },
+  {
+    number: "02",
+    title: "Funnels + Integrations",
+    headline: "Protect the lead after the click.",
+    body: "Clear inquiry paths and carefully chosen connections that help the right information reach the people and systems responsible for follow-up.",
+  },
+  {
+    number: "03",
+    title: "Web Analytics",
+    headline: "Measure actions that matter to the business.",
+    body: "Verified tracking for calls, forms, bookings, service interest, and other meaningful steps—so the next decision is based on evidence.",
   },
 ];
 
 const process = [
   {
     number: "01",
-    title: "Understand the real operation",
-    body: "Learn how customers find you, what earns their trust, where inquiries go, and what your team must do next before recommending features.",
+    title: "Talk through the business",
+    body: "We begin with how customers find you, what earns their trust, where the current process breaks down, and what your team needs to happen next.",
   },
   {
     number: "02",
-    title: "Expose the risk early",
-    body: "Identify weak assumptions, dependencies, account ownership, recurring costs, failure points, and launch criteria while they are still planning decisions.",
+    title: "Plan before building",
+    body: "Dark Labs defines the customer path, scope, ownership, recurring services, risks, measurement, and launch standard before development expands.",
   },
   {
     number: "03",
-    title: "Build the complete path",
-    body: "Connect the website, conversion path, lead delivery, integrations, and measurement—and test the full customer journey, not isolated screens.",
-  },
-  {
-    number: "04",
-    title: "Launch and stay accountable",
-    body: "Release through a controlled gate, verify the live system, correct defects, and use credible evidence to decide what deserves improvement next.",
+    title: "Build, verify, and launch",
+    body: "I build and test the complete path, release it through a controlled launch, verify the live system, and support the agreed stabilization period.",
   },
 ];
 
@@ -54,6 +70,34 @@ const fitSignals = [
   "You value careful planning, direct accountability, and a durable business asset over a disposable template.",
 ];
 
+const faqs = [
+  {
+    question: "Do I need to know exactly what I need?",
+    answer:
+      "No. Explain what is happening in the business, where customers or staff encounter friction, and what you want to improve. Determining the right system is part of the conversation.",
+  },
+  {
+    question: "Can Dark Labs work with systems we already use?",
+    answer:
+      "Often, yes. I first determine what should remain in place, what can be connected safely, and where a simpler workflow is the better answer. Compatibility and responsibilities are confirmed before they enter the scope.",
+  },
+  {
+    question: "What happens after launch?",
+    answer:
+      "Every build defines an agreed stabilization period for verifying the live system and addressing launch defects. Ongoing maintenance, reporting, and improvements are separate options with clear boundaries.",
+  },
+  {
+    question: "How is final pricing determined?",
+    answer:
+      "Pricing follows the actual scope, content, integrations, and risk. The first conversation establishes fit; deeper planning is handled through a defined paid engagement when the work requires it.",
+  },
+  {
+    question: "Do you guarantee leads, revenue, or search rankings?",
+    answer:
+      "No responsible consultant can guarantee outcomes controlled by customers, competitors, advertising platforms, or search engines. Dark Labs commits to disciplined planning, careful in-scope implementation, direct communication, and honest measurement.",
+  },
+];
+
 export function HomeSections() {
   return (
     <>
@@ -61,172 +105,33 @@ export function HomeSections() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-4xl">
             <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-              Strong foundations first
+              Does this sound familiar?
             </p>
             <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-              Make the hard decisions before they become expensive problems.
+              A website can look finished and still leave the business exposed.
             </h2>
             <p className="mt-6 max-w-3xl text-base leading-8 text-white/55">
-              A serious website begins before the first screen is designed. The
-              offer, customer path, account ownership, lead routing, third-party
-              services, analytics, and launch controls need to work together.
-              Dark Labs plans those pieces early so preventable mistakes do not
-              become operational problems later.
+              These are not cosmetic details. They are business-system
+              decisions, and they are easier to address during planning than
+              after real customers depend on the finished work.
             </p>
           </div>
 
           <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {outcomes.map((outcome) => (
+            {businessProblems.map((problem) => (
               <article
-                key={outcome.number}
+                key={problem.number}
                 className="flex min-h-72 flex-col justify-between rounded-[2rem] border border-white/10 bg-white/[0.035] p-7"
               >
                 <p className="font-mono text-sm text-white/30">
-                  {outcome.number}
+                  {problem.number}
                 </p>
                 <div>
                   <h3 className="text-2xl font-semibold tracking-[-0.04em]">
-                    {outcome.title}
+                    {problem.title}
                   </h3>
                   <p className="mt-4 text-sm leading-6 text-white/50">
-                    {outcome.body}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="engagements"
-        className="relative scroll-mt-24 overflow-hidden px-6 py-24 md:py-32"
-      >
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 80% 18%, rgba(255,255,255,0.11), transparent 30%), linear-gradient(180deg, #000 0%, #050507 100%)",
-          }}
-        />
-
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-                Defined engagements
-              </p>
-              <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-                Buy a clear outcome—not a vague promise.
-              </h2>
-            </div>
-            <div>
-              <p className="max-w-2xl text-base leading-8 text-white/55">
-                Every engagement has a defined business problem, scope, launch
-                standard, and next decision. Final pricing follows the Blueprint
-                when requirements or integrations need deeper discovery.
-              </p>
-              <Link
-                href="/services#engagements"
-                className="mt-7 inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
-              >
-                Compare Engagements
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-14 grid gap-4 lg:grid-cols-2">
-            {ENGAGEMENTS.map((engagement) => (
-              <article
-                key={engagement.name}
-                className={`rounded-[2rem] border p-7 backdrop-blur-sm md:p-8 ${
-                  "featured" in engagement && engagement.featured
-                    ? "border-white/25 bg-white/[0.085]"
-                    : "border-white/10 bg-black/35"
-                }`}
-              >
-                <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
-                  <div>
-                    {"featured" in engagement && engagement.featured ? (
-                      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
-                        Flagship engagement
-                      </p>
-                    ) : null}
-                    <h3 className="text-3xl font-semibold tracking-[-0.045em]">
-                      {engagement.name}
-                    </h3>
-                  </div>
-                  <div className="sm:text-right">
-                    <p className="text-sm font-semibold text-white/85">
-                      {engagement.investment}
-                    </p>
-                    <p className="mt-1 text-xs text-white/35">
-                      {engagement.timeline}
-                    </p>
-                  </div>
-                </div>
-
-                <p className="mt-6 max-w-2xl text-sm leading-7 text-white/52">
-                  {engagement.summary}
-                </p>
-
-                <ul className="mt-7 grid gap-3">
-                  {engagement.includes.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-3 border-t border-white/10 pt-3 text-sm leading-6 text-white/65"
-                    >
-                      <span
-                        aria-hidden
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/45"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <p className="mt-7 text-xs leading-6 text-white/38">
-                  {engagement.note}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-white/10 bg-black px-6 py-24 md:py-32">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.75fr_1.25fr]">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-              Founder-led accountability
-            </p>
-            <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-              The person making the promises stays responsible for the work.
-            </h2>
-            <p className="mt-6 max-w-xl text-sm leading-7 text-white/50">
-              You work directly with the founder from the first strategic
-              decision through launch and stabilization. That continuity
-              protects the original business goal, reduces handoff mistakes, and
-              makes accountability unmistakable when the work becomes difficult.
-            </p>
-          </div>
-
-          <div className="grid gap-3">
-            {process.map((step) => (
-              <article
-                key={step.number}
-                className="grid gap-5 rounded-3xl border border-white/10 bg-white/[0.035] p-5 md:grid-cols-[88px_1fr]"
-              >
-                <p className="font-mono text-3xl tracking-[-0.08em] text-white/35">
-                  {step.number}
-                </p>
-                <div>
-                  <h3 className="text-xl font-semibold tracking-[-0.03em]">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-white/45">
-                    {step.body}
+                    {problem.body}
                   </p>
                 </div>
               </article>
@@ -240,27 +145,29 @@ export function HomeSections() {
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-                Work worth standing behind
+                Selected work
               </p>
               <p className="mt-5 font-mono text-sm uppercase tracking-[0.22em] text-white/45">
-                Repete Auto · Case study in progress
+                Repete Auto · Vernal, Utah
               </p>
             </div>
             <div>
               <h2 className="text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-                See the thinking behind the finished system.
+                A dealership website built around the way the business actually
+                operates.
               </h2>
               <p className="mt-6 max-w-3xl text-base leading-8 text-white/55">
-                The Repete Auto case study documents the strategy, architecture,
-                implementation, launch controls, and selected improvements
-                behind a custom dealership website. Dark Labs publishes
-                performance claims only when verified measurement supports them.
+                Dark Labs built a custom website around Repete Auto&apos;s
+                existing vehicle-inventory and inquiry workflow, with clearer
+                customer paths, mobile usability, search foundations, meaningful
+                event measurement, and a controlled launch process. Performance
+                claims are published only when verified evidence supports them.
               </p>
               <Link
                 href="/work"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.11]"
               >
-                View Selected Work
+                View the Repete Auto Work
               </Link>
             </div>
           </div>
@@ -268,7 +175,128 @@ export function HomeSections() {
       </section>
 
       <section className="border-y border-white/10 bg-black px-6 py-24 md:py-32">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
+              Founder-led accountability
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
+              The person making the promises stays responsible for the work.
+            </h2>
+            <p className="mt-6 max-w-xl text-base leading-8 text-white/55">
+              You work directly with me from the first business conversation
+              through the agreed launch and stabilization period. There is no
+              handoff to someone who was not part of the original decisions.
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-7 md:p-10">
+            <p className="text-2xl font-semibold leading-snug tracking-[-0.035em] text-white/90 md:text-3xl">
+              If I know the answer, I will give it to you directly. If I do not,
+              I will say so, do the work to find it, and return with a grounded
+              recommendation.
+            </p>
+            <p className="mt-6 text-sm leading-7 text-white/52">
+              When I see a structural risk, I bring it up while it is still a
+              planning decision. My standard is to tell the truth, protect the
+              agreed outcome, communicate clearly, and follow through on the
+              work Dark Labs accepts.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+            >
+              Talk to Agustin
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-4xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
+              What Dark Labs builds
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
+              Three parts of one dependable customer journey.
+            </h2>
+            <p className="mt-6 max-w-3xl text-base leading-8 text-white/55">
+              Your website, lead flow, and measurement should support the same
+              business goal. Dark Labs plans them together and builds only what
+              the business actually needs.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 lg:grid-cols-3">
+            {services.map((service) => (
+              <article
+                key={service.number}
+                className="flex min-h-80 flex-col justify-between rounded-[2rem] border border-white/10 bg-white/[0.035] p-7"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <p className="font-mono text-sm text-white/30">
+                    {service.number}
+                  </p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/35">
+                    {service.title}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-semibold tracking-[-0.04em]">
+                    {service.headline}
+                  </h3>
+                  <p className="mt-4 text-sm leading-7 text-white/50">
+                    {service.body}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <Link
+            href="/services#engagements"
+            className="mt-8 inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+          >
+            See Services and Starting Investments
+          </Link>
+        </div>
+      </section>
+
+      <section className="border-y border-white/10 bg-black px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-4xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
+              Simple process · serious planning
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
+              Understand the business before prescribing the system.
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-4 lg:grid-cols-3">
+            {process.map((step) => (
+              <article
+                key={step.number}
+                className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-7"
+              >
+                <p className="font-mono text-4xl tracking-[-0.08em] text-white/30">
+                  {step.number}
+                </p>
+                <h3 className="mt-10 text-2xl font-semibold tracking-[-0.04em]">
+                  {step.title}
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-white/50">
+                  {step.body}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.75fr_1.25fr]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
               Best fit
@@ -276,6 +304,19 @@ export function HomeSections() {
             <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
               Built for owners who care what happens after launch.
             </h2>
+            <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.035] p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/35">
+                Starting investment
+              </p>
+              <p className="mt-3 text-xl font-semibold text-white/85">
+                Paid planning starts at $1,500. Custom website builds start at
+                $7,500.
+              </p>
+              <p className="mt-3 text-sm leading-6 text-white/45">
+                Final scope and pricing depend on content, integrations,
+                business risk, and the work required to launch responsibly.
+              </p>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -291,29 +332,57 @@ export function HomeSections() {
         </div>
       </section>
 
+      <section className="border-y border-white/10 bg-black px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
+            Common questions
+          </p>
+          <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
+            Clear answers before the first call.
+          </h2>
+
+          <div className="mt-10 divide-y divide-white/10 border-y border-white/10">
+            {faqs.map((faq) => (
+              <details key={faq.question} className="group py-6">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-xl font-semibold tracking-[-0.025em] text-white/85">
+                  {faq.question}
+                  <span
+                    aria-hidden
+                    className="text-2xl font-normal text-white/35 transition group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 max-w-3xl text-sm leading-7 text-white/50">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="px-6 py-20 md:py-28">
         <div className="mx-auto max-w-7xl rounded-[2rem] border border-white/10 bg-white/[0.035] p-8 md:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
-                The standard I intend to earn
+                Start with a real conversation
               </p>
               <h2 className="mt-4 max-w-4xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-                I want every client to be able to say: “Go with Dark Labs.
-                Agustin will tell you the truth, find the answer, and follow
-                through when the work gets difficult.”
+                Tell me what is happening now—and what you need the business to
+                do better.
               </h2>
               <p className="mt-6 max-w-3xl text-sm leading-7 text-white/52">
-                That recommendation is never assumed. It has to be earned
-                through direct advice, disciplined planning, careful execution,
-                clear boundaries, and the way I respond when the work becomes
-                difficult.
+                Start with the business problem. If Dark Labs is not the right
+                fit, I will tell you. If the responsible next step is smaller
+                than a full build, I will tell you that too.
               </p>
             </div>
 
             <div className="lg:text-right">
               <p className="text-xl font-semibold tracking-[-0.025em] text-white/85">
-                Tell me what your business is trying to solve.
+                The first goal is clarity—not a rushed close.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:justify-end">
                 <Link
@@ -322,12 +391,12 @@ export function HomeSections() {
                 >
                   Talk to Agustin
                 </Link>
-                <Link
-                  href="/work"
+                <a
+                  href={APP_CONFIG.phoneHref}
                   className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
                 >
-                  Review the Work
-                </Link>
+                  Call {APP_CONFIG.phoneDisplay}
+                </a>
               </div>
             </div>
           </div>
