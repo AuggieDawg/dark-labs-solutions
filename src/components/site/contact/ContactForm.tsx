@@ -103,7 +103,7 @@ function SubmitButton() {
       aria-disabled={pending}
       className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-wait disabled:opacity-65"
     >
-      {pending ? "Sending project inquiry…" : "Send Project Inquiry"}
+      {pending ? "Sending project context…" : "Send Project Context"}
     </button>
   );
 }
@@ -169,17 +169,17 @@ export function ContactForm({
   return (
     <section className="rounded-[2rem] border border-white/12 bg-white/[0.045] p-6 shadow-2xl shadow-black/30 md:p-8">
       <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/60">
-        Project inquiry
+        Business context
       </p>
       <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] md:text-4xl">
-        Give the first conversation a useful starting point.
+        Give me the business context—not a polished technical brief.
       </h2>
       <p
         id="contact-form-description"
         className="mt-4 text-sm leading-7 text-white/65"
       >
-        Required fields are marked with an asterisk. Qualification details are
-        optional; share only what you know today.
+        Required fields are marked with an asterisk. Share what you know today;
+        you do not need to diagnose the technical solution yourself.
       </p>
 
       {state.status === "error" ? (
@@ -427,7 +427,7 @@ export function ContactForm({
             minLength={20}
             maxLength={2000}
             rows={6}
-            placeholder="Describe where the current website, funnel, handoff, or measurement process is losing clarity, leads, or momentum."
+            placeholder="Describe where the current website, funnel, handoff, or measurement process is losing clarity, leads, or momentum—and anything you are worried could become expensive later."
             aria-invalid={fieldErrors(state, "businessConstraint").length > 0}
             aria-describedby={describedBy(
               state,

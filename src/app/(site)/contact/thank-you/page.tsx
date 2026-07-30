@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Project Inquiry Received",
-  description: "Confirmation for a Dark Labs project inquiry.",
+  title: "Project Context Received",
+  description: "Confirmation that Dark Labs received project context.",
   robots: {
     index: false,
     follow: false,
@@ -32,18 +32,19 @@ export default async function ContactThankYouPage({
     <main className="flex min-h-[85svh] items-center bg-black px-6 pb-24 pt-32 text-white md:pb-32 md:pt-40">
       <div className="mx-auto w-full max-w-4xl rounded-[2.25rem] border border-white/12 bg-white/[0.045] p-7 shadow-2xl shadow-black/40 md:p-12">
         <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
-          Project inquiry
+          Project context
         </p>
         <h1 className="mt-6 max-w-3xl text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-          Thank you for the context.
+          Thank you for sharing the business context.
         </h1>
 
         {reference ? (
           <>
             <p className="mt-6 max-w-2xl text-base leading-8 text-white/70 md:text-lg">
-              Your inquiry was accepted and stored for review. Dark Labs will
-              use the contact details you provided if a conversation is the
-              right next step.
+              Your inquiry was accepted and stored for review. I will look at
+              the business problem, the current customer path, and the outcome
+              you described, then follow up with the clearest next step using
+              the contact details you provided.
             </p>
             <div className="mt-8 rounded-2xl border border-white/12 bg-black/35 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">

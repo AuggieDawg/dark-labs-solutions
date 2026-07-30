@@ -4,54 +4,54 @@ import { ENGAGEMENTS } from "@/config/engagements";
 const outcomes = [
   {
     number: "01",
-    title: "Clarify the offer",
-    body: "Make it immediately clear who you help, what you sell, and why the right customer should choose you.",
+    title: "Make the offer unmistakable",
+    body: "The right customer should quickly understand what you do, who it is for, and why your business deserves the next conversation.",
   },
   {
     number: "02",
-    title: "Earn trust faster",
-    body: "Use focused messaging, proof, and a professional customer experience to reduce hesitation before the first conversation.",
+    title: "Earn confidence before the call",
+    body: "Strong messaging, credible proof, and a professional customer experience begin building trust before you enter the room.",
   },
   {
     number: "03",
-    title: "Capture and route demand",
-    body: "Turn interest into qualified inquiries and deliver each lead to the people and systems responsible for follow-up.",
+    title: "Build a dependable inquiry path",
+    body: "An inquiry becomes actionable when it reaches the right person, with the right context, through a tested delivery path.",
   },
   {
     number: "04",
-    title: "Prove what works",
-    body: "Track meaningful conversion events so the next investment is based on evidence rather than pageviews or opinion.",
+    title: "Measure what matters",
+    body: "Track meaningful customer actions so future decisions are based on evidence—not assumptions, pageviews, or sales language.",
   },
 ];
 
 const process = [
   {
     number: "01",
-    title: "Diagnose the constraint",
-    body: "Identify where the current customer journey loses clarity, trust, inquiries, or operational visibility.",
+    title: "Understand the real operation",
+    body: "Learn how customers find you, what earns their trust, where inquiries go, and what your team must do next before recommending features.",
   },
   {
     number: "02",
-    title: "Architect the path",
-    body: "Define the offer, information hierarchy, conversion path, integrations, events, and launch criteria before development expands.",
+    title: "Expose the risk early",
+    body: "Identify weak assumptions, dependencies, account ownership, recurring costs, failure points, and launch criteria while they are still planning decisions.",
   },
   {
     number: "03",
-    title: "Build and connect",
-    body: "Design the experience, develop the system, connect the required tools, and test the full lead path—not isolated screens.",
+    title: "Build the complete path",
+    body: "Connect the website, conversion path, lead delivery, integrations, and measurement—and test the full customer journey, not isolated screens.",
   },
   {
     number: "04",
-    title: "Launch and stabilize",
-    body: "Release through a controlled gate, verify production behavior, correct defects, and turn initial data into the next decision.",
+    title: "Launch and stay accountable",
+    body: "Release through a controlled gate, verify the live system, correct defects, and use credible evidence to decide what deserves improvement next.",
   },
 ];
 
 const fitSignals = [
-  "You have a proven service, operation, or offer—not only an untested idea.",
+  "You operate an established business with a real offer, real customers, and a reputation worth protecting.",
   "The current website undersells the quality of the business or creates friction for qualified buyers.",
-  "Leads need better capture, qualification, routing, follow-up, or attribution.",
-  "You value a durable business asset and accountable implementation over a disposable template.",
+  "You want honest advice—even when the right answer is smaller, harder, or different from what you expected.",
+  "You value careful planning, direct accountability, and a durable business asset over a disposable template.",
 ];
 
 export function HomeSections() {
@@ -61,15 +61,17 @@ export function HomeSections() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-4xl">
             <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-              Built for the buying journey
+              Strong foundations first
             </p>
             <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-              A strong website does more than look credible.
+              Make the hard decisions before they become expensive problems.
             </h2>
             <p className="mt-6 max-w-3xl text-base leading-8 text-white/55">
-              It helps the right customer understand the offer, trust the
-              business, take the next step, and enter a follow-up process the
-              company can actually measure and manage.
+              A serious website begins before the first screen is designed. The
+              offer, customer path, account ownership, lead routing, third-party
+              services, analytics, and launch controls need to work together.
+              Dark Labs plans those pieces early so preventable mistakes do not
+              become operational problems later.
             </p>
           </div>
 
@@ -116,7 +118,7 @@ export function HomeSections() {
                 Defined engagements
               </p>
               <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-                Buy a clear outcome—not an open-ended pile of hours.
+                Buy a clear outcome—not a vague promise.
               </h2>
             </div>
             <div>
@@ -197,15 +199,16 @@ export function HomeSections() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.75fr_1.25fr]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-              Delivery method
+              Founder-led accountability
             </p>
             <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-              Strategy and implementation stay connected.
+              The person making the promises stays responsible for the work.
             </h2>
             <p className="mt-6 max-w-xl text-sm leading-7 text-white/50">
-              The person defining the system is accountable for building and
-              validating it. That continuity reduces handoff loss and keeps the
-              work tied to the business constraint.
+              You work directly with the founder from the first strategic
+              decision through launch and stabilization. That continuity
+              protects the original business goal, reduces handoff mistakes, and
+              makes accountability unmistakable when the work becomes difficult.
             </p>
           </div>
 
@@ -237,7 +240,7 @@ export function HomeSections() {
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-                Proof over promises
+                Work worth standing behind
               </p>
               <p className="mt-5 font-mono text-sm uppercase tracking-[0.22em] text-white/45">
                 Repete Auto · Case study in progress
@@ -245,13 +248,13 @@ export function HomeSections() {
             </div>
             <div>
               <h2 className="text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-                See the decisions behind the finished system.
+                See the thinking behind the finished system.
               </h2>
               <p className="mt-6 max-w-3xl text-base leading-8 text-white/55">
                 The Repete Auto case study documents the strategy, architecture,
                 implementation, launch controls, and selected improvements
-                behind a custom dealership website. Performance claims will be
-                published only when verified measurement supports them.
+                behind a custom dealership website. Dark Labs publishes
+                performance claims only when verified measurement supports them.
               </p>
               <Link
                 href="/work"
@@ -271,7 +274,7 @@ export function HomeSections() {
               Best fit
             </p>
             <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-              Built for businesses ready to improve a real sales process.
+              Built for owners who care what happens after launch.
             </h2>
           </div>
 
@@ -293,34 +296,37 @@ export function HomeSections() {
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/35">
-                Founder-led delivery
+                The standard I intend to earn
               </p>
               <h2 className="mt-4 max-w-4xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-                One accountable technical partner from diagnosis through launch.
+                I want every client to be able to say: “Go with Dark Labs.
+                Agustin will tell you the truth, find the answer, and follow
+                through when the work gets difficult.”
               </h2>
               <p className="mt-6 max-w-3xl text-sm leading-7 text-white/52">
-                Begin with a fit conversation. When the opportunity is real but
-                the scope is not yet clear, the Acquisition Blueprint turns the
-                first decision into a concrete implementation plan.
+                That recommendation is never assumed. It has to be earned
+                through direct advice, disciplined planning, careful execution,
+                clear boundaries, and the way I respond when the work becomes
+                difficult.
               </p>
             </div>
 
             <div className="lg:text-right">
               <p className="text-xl font-semibold tracking-[-0.025em] text-white/85">
-                Ready to identify the highest-leverage constraint?
+                Tell me what your business is trying to solve.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:justify-end">
                 <Link
                   href="/contact"
                   className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
                 >
-                  Book a Fit Call
+                  Talk to Agustin
                 </Link>
                 <Link
-                  href="/services#engagements"
+                  href="/work"
                   className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
                 >
-                  Review Engagements
+                  Review the Work
                 </Link>
               </div>
             </div>

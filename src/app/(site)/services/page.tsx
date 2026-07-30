@@ -11,16 +11,16 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Website & Client Acquisition Engagements",
   description:
-    "Defined Dark Labs engagements for conversion websites, client acquisition systems, integrations, analytics, and ongoing optimization.",
+    "Defined founder-led engagements for custom websites, lead systems, integrations, honest analytics, client ownership, and controlled launches.",
 };
 
 const servicePanels = [
   {
     id: "positioning-experience",
     number: "01",
-    title: "Positioning + Experience",
+    title: "Custom Websites",
     description:
-      "A clear offer, focused content structure, and custom customer experience built to earn the next action.",
+      "Custom strategy, design, and development that make the business easier to understand, trust, find, and contact.",
     video: "/videos/services-websites.mp4",
   },
   {
@@ -28,15 +28,15 @@ const servicePanels = [
     number: "02",
     title: "Funnels + Integrations",
     description:
-      "Lead paths and targeted connections that move qualified inquiries into the systems responsible for follow-up.",
+      "Dependable paths that qualify inquiries and connect them to the people and systems responsible for follow-up.",
     video: "/videos/services-automations.mp4",
   },
   {
     id: "measurement-optimization",
     number: "03",
-    title: "Measurement + Optimization",
+    title: "Web Analytics + Improvement",
     description:
-      "Conversion events, attribution, reporting, and post-launch improvement tied to meaningful business actions.",
+      "Verified conversion events, practical reporting, and measured improvements tied to meaningful customer actions.",
     video: "/videos/services-dashboards.mp4",
   },
 ];
@@ -45,9 +45,9 @@ const capabilityDetails = [
   {
     id: "positioning-experience",
     number: "01",
-    title: "Positioning + Experience",
-    headline: "Make the right customer understand the value quickly.",
-    body: "Dark Labs turns business strategy into a conversion-focused website experience. The work begins with the offer and customer journey, then connects messaging, information architecture, proof, interface design, mobile behavior, technical SEO, and performance into one coherent path.",
+    title: "Custom Websites",
+    headline: "Make the business look as capable online as it is in real life.",
+    body: "A strong website should do more than impress people. It should communicate the offer clearly, answer the questions that create hesitation, establish credibility, perform reliably on mobile, support search visibility, and give the right customer a confident next step.",
     bullets: [
       "Offer and audience clarification",
       "Conversion-focused content architecture",
@@ -73,9 +73,9 @@ const capabilityDetails = [
   {
     id: "measurement-optimization",
     number: "03",
-    title: "Measurement + Optimization",
-    headline: "Know where the customer journey is working—and where it is not.",
-    body: "Dark Labs defines meaningful conversion events, verifies data quality, and turns observed behavior into a practical improvement backlog. Reporting focuses on decisions: which pages, offers, sources, and follow-up paths deserve attention next.",
+    title: "Web Analytics + Improvement",
+    headline: "Measure the actions that matter, then decide with evidence.",
+    body: "Dark Labs defines and verifies meaningful conversion events, establishes a credible launch baseline, and turns customer behavior into a practical improvement backlog. Reporting is built to answer what deserves attention next—not merely to produce impressive-looking traffic numbers.",
     bullets: [
       "Conversion-event and attribution plan",
       "Analytics implementation and validation",
@@ -83,6 +83,29 @@ const capabilityDetails = [
       "Conversion-path analysis",
       "Prioritized experiments and improvements",
     ],
+  },
+];
+
+const foundationStandards = [
+  {
+    title: "Ownership is defined",
+    body: "Production ownership, client access, recurring costs, and handoff responsibilities are documented for the agreed engagement.",
+  },
+  {
+    title: "Costs are visible",
+    body: "Recurring services, vendor dependencies, renewal responsibility, and likely usage costs are identified before they become surprises.",
+  },
+  {
+    title: "Unknowns are recorded",
+    body: "Assumptions and unanswered questions are named, assigned a verification path, and kept out of critical decisions until confirmed.",
+  },
+  {
+    title: "Included paths are tested",
+    body: "The critical lead, notification, integration, mobile, analytics, and recovery paths included in the engagement are tested before release.",
+  },
+  {
+    title: "Launch is controlled",
+    body: "Acceptance criteria, production checks, monitoring, rollback decisions, and stabilization responsibilities are agreed before release.",
   },
 ];
 
@@ -201,16 +224,17 @@ export default async function ServicesPage() {
       <section className="border-b border-white/10 px-6 py-24 md:py-32">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-semibold uppercase tracking-[0.42em] text-white/35">
-            Dark Labs engagements
+            How Dark Labs helps
           </p>
           <h1 className="mt-6 max-w-5xl text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            A defined way to diagnose, build, and improve customer acquisition.
+            Build the foundation first. Then connect, measure, and improve it.
           </h1>
           <p className="mt-6 max-w-3xl text-base leading-8 text-white/55 md:text-lg">
-            Choose the engagement that matches the actual constraint. A website
-            problem should not be sold as a software platform, and an
-            operational lead-flow problem should not be reduced to a visual
-            redesign.
+            The right engagement depends on where the business is losing
+            strength: clarity, trust, lead flow, follow-up, or visibility. Dark
+            Labs diagnoses the constraint before prescribing the work. A website
+            problem should not be sold as a software platform, and a broken
+            process should not be reduced to a visual redesign.
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -224,7 +248,7 @@ export default async function ServicesPage() {
               href="/contact"
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
             >
-              Book a Fit Call
+              Talk Through the Problem
             </Link>
           </div>
         </div>
@@ -359,6 +383,44 @@ export default async function ServicesPage() {
             </div>
           </article>
         ))}
+      </section>
+
+      <section className="border-y border-white/10 px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
+                Core implementation standards
+              </p>
+              <h2 className="mt-5 text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
+                Premium work is visible in the decisions nobody sees on launch
+                day.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-base leading-8 text-white/55">
+              A polished interface cannot compensate for unclear ownership,
+              hidden recurring costs, unreliable lead delivery, or an untested
+              release. Dark Labs applies these standards to the systems and
+              critical paths included in the written engagement.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            {foundationStandards.map((standard) => (
+              <article
+                key={standard.title}
+                className="rounded-3xl border border-white/10 bg-white/[0.035] p-6"
+              >
+                <h3 className="text-xl font-semibold tracking-[-0.03em]">
+                  {standard.title}
+                </h3>
+                <p className="mt-4 text-sm leading-6 text-white/50">
+                  {standard.body}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="border-y border-white/10 px-6 py-24 md:py-32">
@@ -521,7 +583,8 @@ export default async function ServicesPage() {
               Start with the constraint
             </p>
             <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-              Not sure which engagement fits? Begin with a fit call.
+              Bring me the real business problem. I will help determine the
+              right system.
             </h2>
           </div>
 
@@ -530,7 +593,7 @@ export default async function ServicesPage() {
               href="/contact"
               className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
             >
-              Book a Fit Call
+              Talk to Agustin
             </Link>
             <Link
               href="/work"

@@ -93,7 +93,7 @@ export default async function WorkPage() {
       <section className="px-6 pb-20 pt-32 md:pb-28 md:pt-40">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-semibold uppercase tracking-[0.42em] text-white/35">
-            Selected work
+            Work worth standing behind
           </p>
           <h1 className="mt-6 max-w-5xl text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
             The business problem, the system built, and the proof approved for
@@ -328,14 +328,15 @@ export default async function WorkPage() {
               Your project
             </p>
             <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.04em] md:text-5xl">
-              Build the next system worth documenting.
+              Let&apos;s build a system we will both be proud to put our names
+              behind.
             </h2>
           </div>
           <Link
             href="/contact"
             className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
           >
-            Book a Fit Call
+            Talk Through Your Project
           </Link>
         </div>
       </section>

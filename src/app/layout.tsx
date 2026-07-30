@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: `%s | ${APP_CONFIG.companyName}`,
   },
   description:
-    "Dark Labs builds custom websites, lead funnels, targeted integrations, and measurement systems for established businesses.",
+    "Founder-led custom websites, lead systems, targeted integrations, and honest measurement for established businesses that value direct accountability.",
 };
 
 export default function RootLayout({

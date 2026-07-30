@@ -8,7 +8,7 @@ import { createLeadFormToken } from "@/lib/leads/security";
 export const metadata = {
   title: "Start a Project",
   description:
-    "Request a fit conversation for a Dark Labs Acquisition Blueprint, Conversion Website, Client Acquisition System, or optimization engagement.",
+    "Tell Dark Labs how the business works, where the customer path is breaking down, and what a worthwhile result would look like.",
 };
 
 type ContactSearchParams = {
@@ -111,9 +111,11 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             Start with the business constraint—not a feature list.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/65 md:text-lg">
-            Share enough context for a useful first review. Dark Labs will look
-            at the offer, customer path, current friction, and desired outcome
-            before deciding whether a conversation is the right next step.
+            Share how the business works, where the current process is losing
+            clarity or momentum, and what a worthwhile result would look like. I
+            will review it honestly: if Dark Labs can help, I will explain the
+            next step; if something still needs to be figured out, I will tell
+            you that too.
           </p>
 
           {selectedEngagement ? (
@@ -132,12 +134,12 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
 
           <section className="mt-8 rounded-3xl border border-white/10 bg-white/[0.035] p-5">
             <h2 className="text-sm font-semibold text-white">
-              Prefer to make direct contact?
+              Would you rather talk it through directly?
             </h2>
             <p className="mt-3 text-sm leading-6 text-white/60">
-              The structured form is the best way to preserve project context,
-              but phone, email, and Facebook remain available when they are a
-              better fit.
+              Use the form when you want to preserve the full project context.
+              If a direct conversation fits you better, call, email, or send me
+              a message on Facebook.
             </p>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-col xl:flex-row">
               <a

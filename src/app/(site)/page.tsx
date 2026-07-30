@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     absolute: "Conversion Websites & Client Acquisition Systems | Dark Labs",
   },
   description:
-    "Dark Labs builds conversion-focused websites, lead systems, integrations, and analytics for established service businesses.",
+    "Founder-led business technology consulting, conversion websites, lead systems, integrations, and honest measurement for established service businesses.",
 };
 
 export default function HomePage() {

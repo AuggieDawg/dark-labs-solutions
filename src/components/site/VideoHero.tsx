@@ -3,10 +3,10 @@ import Link from "next/link";
 import { VideoBackdrop } from "@/components/site/VideoBackdrop";
 
 const capabilities = [
-  "Positioning + conversion copy",
-  "Custom design + development",
-  "Lead routing + integrations",
-  "Analytics + optimization",
+  "Custom Websites",
+  "Funnels + Integrations",
+  "Web Analytics",
+  "Launch + Stabilization",
 ];
 
 export function VideoHero() {
@@ -17,7 +17,7 @@ export function VideoHero() {
           <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/30 px-4 py-2 shadow-2xl shadow-black/40 backdrop-blur-xl">
             <span className="h-1.5 w-1.5 rounded-full bg-white" />
             <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/60 md:text-xs">
-              Conversion websites · lead systems · measurement
+              Founder-led consulting · websites · lead systems · measurement
             </span>
           </div>
 
@@ -26,29 +26,31 @@ export function VideoHero() {
           </h1>
 
           <p className="mt-7 max-w-3xl text-base leading-8 text-white/68 md:text-lg">
-            Dark Labs designs and builds conversion-focused websites and client
-            acquisition systems for established service businesses. Strategy,
-            content structure, development, lead routing, integrations, and
-            analytics are handled as one accountable system.
+            Dark Labs plans and builds conversion-focused websites, lead
+            systems, integrations, and measurement for established service
+            businesses. Every decision stays tied to how customers find you,
+            trust you, contact you, and how your team follows through.
           </p>
 
           <p className="mt-5 max-w-3xl border-l border-white/25 pl-4 text-sm leading-6 text-white/58">
-            Work directly with the founder responsible for the strategy, build,
-            launch, and post-launch stabilization.
+            My name and reputation are attached to what I build. I plan
+            carefully, tell you what I know and what still needs to be verified,
+            and remain accountable through launch and the agreed stabilization
+            period.
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/services#engagements"
+              href="/contact"
               className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
             >
-              View Engagements
+              Talk to Agustin
             </Link>
             <Link
               href="/work"
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.08] px-6 text-sm font-semibold text-white backdrop-blur-xl transition hover:bg-white/[0.14]"
             >
-              See the Work
+              See How the Work Is Built
             </Link>
           </div>
 

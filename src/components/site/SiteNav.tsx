@@ -9,6 +9,9 @@ import { APP_CONFIG } from "@/config/app";
 
 export function SiteNav() {
   const pathname = usePathname();
+  const navigationItems = APP_CONFIG.publicNav.filter(
+    ({ href }) => href !== "/" && href !== "/contact",
+  );
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
@@ -32,7 +35,7 @@ export function SiteNav() {
           aria-label="Primary navigation"
           className="pointer-events-auto hidden items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 shadow-2xl shadow-black/35 backdrop-blur-xl md:flex"
         >
-          {APP_CONFIG.publicNav.slice(1).map((item) => {
+          {navigationItems.map((item) => {
             const active = pathname === item.href;
 
             return (
@@ -65,9 +68,10 @@ export function SiteNav() {
 
           <Link
             href="/contact"
-            className="rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-2xl shadow-black/30 transition hover:bg-white/90 sm:px-5"
+            className="whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-2xl shadow-black/30 transition hover:bg-white/90 sm:px-5"
           >
-            Contact
+            <span className="sm:hidden">Contact</span>
+            <span className="hidden sm:inline">Start a Project</span>
           </Link>
 
           <Link
@@ -84,7 +88,7 @@ export function SiteNav() {
           aria-label="Mobile navigation"
           className="flex gap-2 overflow-x-auto rounded-full border border-white/10 bg-black/25 px-2 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50 shadow-2xl shadow-black/40 backdrop-blur-xl"
         >
-          {APP_CONFIG.publicNav.slice(1).map((item) => {
+          {navigationItems.map((item) => {
             const active = pathname === item.href;
 
             return (

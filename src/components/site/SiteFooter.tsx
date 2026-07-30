@@ -11,8 +11,12 @@ export function SiteFooter() {
             {APP_CONFIG.companyName}
           </p>
           <p className="mt-4 max-w-md text-sm leading-6 text-white/45">
-            Custom websites, lead funnels, targeted integrations, and measurable
-            post-launch improvement for established businesses.
+            Founder-led custom websites, funnels, integrations, and web
+            analytics for established businesses that value solid foundations
+            and direct accountability.
+          </p>
+          <p className="mt-4 max-w-md text-xs font-semibold uppercase tracking-[0.2em] text-white/30">
+            Technology behind the scenes. Your business in the spotlight.
           </p>
         </div>
 
@@ -93,10 +97,10 @@ export function SiteFooter() {
       <div className="border-t border-white/10 px-6 py-5">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 text-xs text-white/30 md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} Dark Labs. Built to turn attention into
-            measurable action.
+            © {new Date().getFullYear()} Dark Labs. Plan deeply. Build
+            carefully. Measure honestly. Earn the referral.
           </p>
-          <p className="font-mono">founder-led / measurement-ready</p>
+          <p className="font-mono">founder-led / accountable through launch</p>
         </div>
       </div>
     </footer>

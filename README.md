@@ -7,6 +7,9 @@ Dark Labs Solutions is a Next.js application with two connected surfaces:
 
 The application uses Next.js, React, Prisma, PostgreSQL, NextAuth with Google OAuth, Vercel, and Vercel Blob.
 
+Public positioning, voice, delivery promises, and claims boundaries are defined
+in [`docs/brand-foundation.md`](docs/brand-foundation.md).
+
 ## Business offer
 
 The public site is organized around four defined engagements:
