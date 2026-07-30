@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { APP_CONFIG } from "@/config/app";
+import { ProcessSignalFlow } from "@/components/site/ProcessSignalFlow";
 
 const businessProblems = [
   {
@@ -60,6 +61,29 @@ const process = [
     number: "03",
     title: "Build, verify, and launch",
     body: "I build and test the complete path, release it through a controlled launch, verify the live system, and support the agreed stabilization period.",
+  },
+];
+
+const selectedWorkFrames = [
+  {
+    number: "01",
+    label: "Business constraint",
+    body: "Create a stronger public experience without discarding the dealership tools already in use.",
+  },
+  {
+    number: "02",
+    label: "Customer path",
+    body: "Help buyers browse inventory, establish trust, and reach the dealership from any device.",
+  },
+  {
+    number: "03",
+    label: "System connection",
+    body: "Build the custom experience around the existing inventory and inquiry workflow.",
+  },
+  {
+    number: "04",
+    label: "Evidence standard",
+    body: "Keep media private by default and publish performance claims only when verified measurement supports them.",
   },
 ];
 
@@ -141,35 +165,82 @@ export function HomeSections() {
       </section>
 
       <section className="px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl rounded-[2.25rem] border border-white/10 bg-white/[0.035] p-8 md:p-12">
-          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/35">
-                Selected work
+        <div className="dark-labs-noise relative mx-auto max-w-7xl overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.035]">
+          <div
+            aria-hidden="true"
+            className="dark-labs-grid absolute inset-0 opacity-[0.16]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute -right-28 -top-36 h-96 w-96 rounded-full bg-white/[0.08] blur-3xl"
+          />
+
+          <div className="relative">
+            <div className="flex flex-col justify-between gap-4 border-b border-white/10 px-8 py-6 sm:flex-row sm:items-center md:px-12">
+              <p className="font-mono text-xs uppercase tracking-[0.24em] text-white/48">
+                Case file / 01
               </p>
-              <p className="mt-5 font-mono text-sm uppercase tracking-[0.22em] text-white/45">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/52">
                 Repete Auto · Vernal, Utah
               </p>
             </div>
-            <div>
-              <h2 className="text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
-                A dealership website built around the way the business actually
-                operates.
-              </h2>
-              <p className="mt-6 max-w-3xl text-base leading-8 text-white/55">
-                Dark Labs built a custom website around Repete Auto&apos;s
-                existing vehicle-inventory and inquiry workflow, with clearer
-                customer paths, mobile usability, search foundations, meaningful
-                event measurement, and a controlled launch process. Performance
-                claims are published only when verified evidence supports them.
-              </p>
-              <Link
-                href="/work"
-                className="mt-8 inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.11]"
-              >
-                View the Repete Auto Work
-              </Link>
+
+            <div className="grid gap-10 px-8 py-12 md:px-12 md:py-16 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.38em] text-white/52">
+                  First client system
+                </p>
+                <p className="mt-5 max-w-sm text-sm leading-7 text-white/56">
+                  One real project, shown with the business reasoning intact. No
+                  padded portfolio and no unsupported performance claims.
+                </p>
+              </div>
+              <div>
+                <h2 className="text-4xl font-semibold tracking-[-0.055em] md:text-6xl">
+                  A dealership website built around the way the business
+                  actually operates.
+                </h2>
+                <p className="mt-6 max-w-3xl text-base leading-8 text-white/55">
+                  Dark Labs built a custom website around Repete Auto&apos;s
+                  existing vehicle-inventory and inquiry workflow, with clearer
+                  customer paths, mobile usability, search foundations,
+                  meaningful event measurement, and a controlled launch process.
+                </p>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    href="/work"
+                    className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+                  >
+                    Open Case File 01
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-black/30 px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+                  >
+                    Talk About a Similar Constraint
+                  </Link>
+                </div>
+              </div>
             </div>
+
+            <ol className="grid border-t border-white/10 sm:grid-cols-2 xl:grid-cols-4">
+              {selectedWorkFrames.map((frame) => (
+                <li
+                  key={frame.number}
+                  className="border-t border-white/10 px-8 py-7 first:border-t-0 sm:[&:nth-child(2)]:border-t-0 sm:[&:nth-child(even)]:border-l xl:border-l xl:border-t-0 xl:first:border-l-0"
+                >
+                  <p className="font-mono text-xs tracking-[0.18em] text-white/50">
+                    {frame.number}
+                  </p>
+                  <h3 className="mt-5 text-sm font-semibold uppercase tracking-[0.16em] text-white/70">
+                    {frame.label}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-white/56">
+                    {frame.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>
@@ -274,23 +345,27 @@ export function HomeSections() {
             </h2>
           </div>
 
-          <div className="mt-12 grid gap-4 lg:grid-cols-3">
-            {process.map((step) => (
-              <article
-                key={step.number}
-                className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-7"
+          <ProcessSignalFlow steps={process} />
+
+          <div className="mt-10 flex flex-col justify-between gap-6 border-t border-white/10 pt-8 md:flex-row md:items-center">
+            <p className="max-w-2xl text-sm leading-7 text-white/48">
+              You do not need a technical brief. Start with what is happening in
+              the business, and I will help identify the responsible next step.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/contact"
+                className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
               >
-                <p className="font-mono text-4xl tracking-[-0.08em] text-white/30">
-                  {step.number}
-                </p>
-                <h3 className="mt-10 text-2xl font-semibold tracking-[-0.04em]">
-                  {step.title}
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-white/50">
-                  {step.body}
-                </p>
-              </article>
-            ))}
+                Talk to Agustin
+              </Link>
+              <a
+                href={APP_CONFIG.phoneHref}
+                className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-6 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+              >
+                Call {APP_CONFIG.phoneDisplay}
+              </a>
+            </div>
           </div>
         </div>
       </section>

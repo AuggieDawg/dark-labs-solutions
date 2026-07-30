@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 
+import { CaseFileViewer } from "@/components/site/CaseFileViewer";
 import { prisma } from "@/lib/db/prisma";
 import { getPrimaryWorkspaceSlug } from "@/lib/env/server";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Selected Work",
   description:
-    "Client-approved Dark Labs case studies covering conversion websites, lead systems, integrations, launch controls, and measurable improvements.",
+    "Public Dark Labs case studies covering conversion websites, lead systems, integrations, launch controls, and measurable improvements.",
 };
 
 async function loadPublishedProjects() {
@@ -27,6 +27,7 @@ async function loadPublishedProjects() {
       orderBy: [{ workSortOrder: "asc" }, { workPublishedAt: "desc" }],
       select: {
         id: true,
+        slug: true,
         workTitle: true,
         workClientLabel: true,
         workSummary: true,
@@ -96,14 +97,14 @@ export default async function WorkPage() {
             Work worth standing behind
           </p>
           <h1 className="mt-6 max-w-5xl text-5xl font-semibold tracking-[-0.07em] md:text-7xl">
-            The business problem, the system built, and the proof approved for
-            public use.
+            The business problem, the system built, and the proof intentionally
+            published.
           </h1>
           <p className="mt-6 max-w-3xl text-base leading-8 text-white/55 md:text-lg">
             Dark Labs publishes the reasoning behind the work—not inflated
             claims or private client data. Results appear only when the
-            underlying measurement is credible and the client has approved the
-            public story.
+            underlying measurement is credible and the material has been
+            explicitly selected for the public story.
           </p>
         </div>
       </section>
@@ -131,7 +132,7 @@ export default async function WorkPage() {
               Case studies
             </p>
             <h2 className="mt-5 max-w-3xl text-3xl font-semibold tracking-[-0.045em] md:text-5xl">
-              The first client-approved project stories are being prepared.
+              The first public project stories are being prepared.
             </h2>
             <p className="mt-5 max-w-2xl text-sm leading-7 text-white/50">
               Projects remain private by default. A case study appears here only
@@ -143,32 +144,112 @@ export default async function WorkPage() {
       ) : (
         <div className="border-t border-white/10">
           {projects.map((project, projectIndex) => {
+            const projectAnchor = `project-${project.slug || project.id}`;
             const storySections = [
-              { label: "Challenge", body: project.workChallenge },
-              { label: "System", body: project.workSolution },
-              { label: "Outcome", body: project.workOutcome },
-            ].filter((item) => item.body);
+              {
+                number: "01",
+                label: "Business constraint",
+                body: project.workChallenge,
+              },
+              {
+                number: "02",
+                label: "System built",
+                body: project.workSolution,
+              },
+              {
+                number: "03",
+                label: "Approved evidence",
+                body: project.workOutcome,
+              },
+            ].filter((item) => Boolean(item.body));
+            const caseIndex = [
+              {
+                label: "Overview",
+                href: `#${projectAnchor}-overview`,
+              },
+              ...(project.beforeAfterAssets.length > 0
+                ? [
+                    {
+                      label: "Visual proof",
+                      href: `#${projectAnchor}-proof`,
+                    },
+                  ]
+                : []),
+              ...(storySections.length > 0
+                ? [
+                    {
+                      label: "Reasoning",
+                      href: `#${projectAnchor}-reasoning`,
+                    },
+                  ]
+                : []),
+              ...(project.updates.length > 0
+                ? [
+                    {
+                      label: "Field notes",
+                      href: `#${projectAnchor}-notes`,
+                    },
+                  ]
+                : []),
+            ];
 
             return (
               <article
                 key={project.id}
+                id={projectAnchor}
                 className="scroll-mt-24 border-b border-white/10 px-6 py-24 md:py-32"
               >
-                <div className="mx-auto max-w-7xl">
-                  <div className="grid gap-10 lg:grid-cols-[0.62fr_1.38fr] lg:gap-16">
-                    <div>
-                      <p className="font-mono text-sm text-white/30">
-                        {String(projectIndex + 1).padStart(2, "0")}
+                <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.32fr_1.68fr] lg:gap-16">
+                  <aside className="lg:sticky lg:top-28 lg:self-start">
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/52">
+                      Case file
+                    </p>
+                    <p
+                      aria-hidden="true"
+                      className="mt-4 font-mono text-6xl tracking-[-0.1em] text-white/18"
+                    >
+                      {String(projectIndex + 1).padStart(2, "0")}
+                    </p>
+                    {project.workClientLabel ? (
+                      <p className="mt-5 text-xs font-semibold uppercase tracking-[0.28em] text-white/48">
+                        {project.workClientLabel}
                       </p>
-                      {project.workClientLabel ? (
-                        <p className="mt-5 text-xs font-semibold uppercase tracking-[0.28em] text-white/38">
-                          {project.workClientLabel}
-                        </p>
-                      ) : null}
-                    </div>
+                    ) : null}
 
-                    <div>
-                      <h2 className="max-w-4xl text-4xl font-semibold tracking-[-0.06em] md:text-6xl">
+                    <nav
+                      aria-label={`Sections in the ${project.workTitle} case file`}
+                      className="mt-8 overflow-x-auto pb-2 lg:overflow-visible lg:pb-0"
+                    >
+                      <ol className="flex min-w-max gap-2 lg:min-w-0 lg:flex-col lg:gap-1">
+                        {caseIndex.map((item, index) => (
+                          <li key={item.href}>
+                            <a
+                              href={item.href}
+                              className="flex min-h-11 items-center gap-3 rounded-xl border border-white/8 bg-white/[0.02] px-3 text-xs font-semibold text-white/48 transition hover:border-white/14 hover:bg-white/[0.05] hover:text-white/78 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                            >
+                              <span
+                                aria-hidden="true"
+                                className="font-mono text-[10px] tracking-[0.16em] text-white/36"
+                              >
+                                {String(index + 1).padStart(2, "0")}
+                              </span>
+                              {item.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ol>
+                    </nav>
+                  </aside>
+
+                  <div className="min-w-0">
+                    <section
+                      id={`${projectAnchor}-overview`}
+                      className="scroll-mt-28"
+                    >
+                      <p className="font-mono text-xs uppercase tracking-[0.22em] text-white/52">
+                        Story / evidence
+                      </p>
+                      <h2 className="mt-5 max-w-4xl text-4xl font-semibold tracking-[-0.06em] md:text-6xl">
                         {project.workTitle}
                       </h2>
                       {project.workSummary ? (
@@ -192,128 +273,82 @@ export default async function WorkPage() {
                           Visit Live Website ↗
                         </a>
                       ) : null}
-                    </div>
-                  </div>
+                    </section>
 
-                  {project.beforeAfterAssets.length > 0 ? (
-                    <section className="mt-16">
-                      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/32">
-                            Selected visual proof
+                    {project.beforeAfterAssets.length > 0 ? (
+                      <CaseFileViewer
+                        projectTitle={project.workTitle}
+                        assets={project.beforeAfterAssets}
+                        sectionId={`${projectAnchor}-proof`}
+                      />
+                    ) : null}
+
+                    {storySections.length > 0 ? (
+                      <section
+                        id={`${projectAnchor}-reasoning`}
+                        className="mt-16 scroll-mt-28"
+                      >
+                        <div className="border-y border-white/10 py-6">
+                          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/52">
+                            The reasoning behind the work
                           </p>
-                          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/42">
-                            Only media explicitly marked public in the Command
-                            Center is rendered here.
-                          </p>
+                          <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white/88">
+                            The constraint, the system, and what can honestly be
+                            shown.
+                          </h3>
                         </div>
-                      </div>
 
-                      <div className="mt-6 grid gap-5">
-                        {project.beforeAfterAssets.map((asset) => (
-                          <figure
-                            key={asset.id}
-                            className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.025]"
-                          >
-                            <div
-                              className={`grid gap-px bg-white/10 ${
-                                asset.beforeImageUrl && asset.afterImageUrl
-                                  ? "lg:grid-cols-2"
-                                  : ""
-                              }`}
+                        <ol className="divide-y divide-white/10 border-b border-white/10">
+                          {storySections.map((section) => (
+                            <li
+                              key={section.label}
+                              className="grid gap-6 py-8 md:grid-cols-[8rem_1fr] md:gap-10"
                             >
-                              {asset.beforeImageUrl ? (
-                                <div className="relative aspect-[16/10] bg-black">
-                                  <Image
-                                    src={asset.beforeImageUrl}
-                                    alt={`${asset.label || project.workTitle} before`}
-                                    fill
-                                    sizes="(min-width: 1024px) 50vw, 100vw"
-                                    className="object-cover"
-                                  />
-                                  <span className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 backdrop-blur">
-                                    Before
-                                  </span>
-                                </div>
-                              ) : null}
-                              {asset.afterImageUrl ? (
-                                <div className="relative aspect-[16/10] bg-black">
-                                  <Image
-                                    src={asset.afterImageUrl}
-                                    alt={`${asset.label || project.workTitle} after`}
-                                    fill
-                                    sizes="(min-width: 1024px) 50vw, 100vw"
-                                    className="object-cover"
-                                  />
-                                  <span className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 backdrop-blur">
-                                    After
-                                  </span>
-                                </div>
-                              ) : null}
-                            </div>
-
-                            {asset.label || asset.notes ? (
-                              <figcaption className="p-6">
-                                {asset.label ? (
-                                  <p className="text-sm font-semibold text-white/75">
-                                    {asset.label}
-                                  </p>
-                                ) : null}
-                                {asset.notes ? (
-                                  <p className="mt-2 whitespace-pre-line text-sm leading-6 text-white/45">
-                                    {asset.notes}
-                                  </p>
-                                ) : null}
-                              </figcaption>
-                            ) : null}
-                          </figure>
-                        ))}
-                      </div>
-                    </section>
-                  ) : null}
-
-                  {storySections.length > 0 ? (
-                    <div className="mt-16 grid gap-4 lg:grid-cols-3">
-                      {storySections.map((section) => (
-                        <section
-                          key={section.label}
-                          className="rounded-3xl border border-white/10 bg-white/[0.035] p-6"
-                        >
-                          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/32">
-                            {section.label}
-                          </p>
-                          <p className="mt-5 whitespace-pre-line text-sm leading-7 text-white/55">
-                            {section.body}
-                          </p>
-                        </section>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  {project.updates.length > 0 ? (
-                    <section className="mt-16 rounded-[2rem] border border-white/10 bg-white/[0.025] p-6 md:p-8">
-                      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/32">
-                        Selected implementation notes
-                      </p>
-                      <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                        {project.updates.map((update) => (
-                          <blockquote
-                            key={update.id}
-                            className="rounded-3xl border border-white/10 bg-black/35 p-6"
-                          >
-                            {update.title ? (
-                              <p className="text-sm font-semibold text-white/75">
-                                {update.title}
+                              <div>
+                                <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50">
+                                  Frame {section.number}
+                                </p>
+                                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/58">
+                                  {section.label}
+                                </p>
+                              </div>
+                              <p className="max-w-3xl whitespace-pre-line text-sm leading-7 text-white/56 md:text-base md:leading-8">
+                                {section.body}
                               </p>
-                            ) : null}
-                            <p className="mt-3 whitespace-pre-line text-sm leading-7 text-white/50">
-                              {update.body}
-                            </p>
-                          </blockquote>
-                        ))}
-                      </div>
-                    </section>
-                  ) : null}
+                            </li>
+                          ))}
+                        </ol>
+                      </section>
+                    ) : null}
+
+                    {project.updates.length > 0 ? (
+                      <section
+                        id={`${projectAnchor}-notes`}
+                        className="mt-16 scroll-mt-28 rounded-[2rem] border border-white/10 bg-white/[0.025] p-6 md:p-8"
+                      >
+                        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/50">
+                          Selected implementation notes
+                        </p>
+                        <div className="mt-6 grid gap-4 xl:grid-cols-2">
+                          {project.updates.map((update) => (
+                            <blockquote
+                              key={update.id}
+                              className="rounded-3xl border border-white/10 bg-black/35 p-6"
+                            >
+                              {update.title ? (
+                                <p className="text-sm font-semibold text-white/75">
+                                  {update.title}
+                                </p>
+                              ) : null}
+                              <p className="mt-3 whitespace-pre-line text-sm leading-7 text-white/50">
+                                {update.body}
+                              </p>
+                            </blockquote>
+                          ))}
+                        </div>
+                      </section>
+                    ) : null}
+                  </div>
                 </div>
               </article>
             );
@@ -336,7 +371,7 @@ export default async function WorkPage() {
             href="/contact"
             className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
           >
-            Talk Through Your Project
+            Talk to Agustin
           </Link>
         </div>
       </section>
